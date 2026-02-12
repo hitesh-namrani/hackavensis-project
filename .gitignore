@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment Variables (Keep these secret!)
+.env
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional: If you use VS Code settings per project
+.vscode/
