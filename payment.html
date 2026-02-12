@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CanteenOS Checkout</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+.hidden{display:none;}
+.method{cursor:pointer;transition:.2s;}
+.method:hover{background:#f1f5f9;}
+.active{border:2px solid #2563eb;background:#eff6ff;}
+</style>
+</head>
+
+<body class="bg-gradient-to-b from-blue-50 to-white min-h-screen font-sans">
+
+<!-- HEADER -->
+<div class="bg-white shadow p-4 flex justify-between">
+<h1 class="text-2xl font-bold text-blue-700">CanteenOS</h1>
+<span class="text-sm text-gray-600 font-semibold">🔒 Secure Payment</span>
+</div>
+
+<!-- ================= CHECKOUT PAGE ================= -->
+<div id="checkoutPage" class="max-w-[900px] mx-auto mt-8 p-4 space-y-6">
+
+<!-- BILL -->
+<div class="bg-white rounded-2xl shadow p-6">
+<h2 class="font-bold text-lg mb-3">Order Summary</h2>
+<div id="billItems"></div>
+
+<div class="border-t mt-4 pt-3">
+<div class="flex justify-between"><span>Subtotal</span><span id="subtotal"></span></div>
+<div class="flex justify-between"><span>GST (5%)</span><span id="gst"></span></div>
+<div class="flex justify-between font-bold text-lg">
+<span>Total</span><span class="text-green-600" id="total"></span>
+</div>
+</div>
+</div>
+
+<!-- PAYMENT METHODS -->
+<div class="bg-white rounded-2xl shadow p-6">
+
+<h2 class="font-bold text-lg mb-4">Select Payment Method</h2>
+
+<!-- UPI -->
+<div class="method p-3 border rounded-lg mb-3" onclick="selectMethod('upi')" id="upiBox">
+UPI (GPay / PhonePe / Paytm)
+</div>
+
+<div id="upiForm" class="hidden mt-3 space-y-3">
+<input id="upiId" type="text" placeholder="Enter UPI ID" class="w-full border rounded-lg px-3 py-2">
+<button onclick="openQR()" class="w-full bg-blue-600 text-white py-2 rounded-lg">Scan QR Instead</button>
+</div>
+
+<!-- CARD -->
+<div class="method p-3 border rounded-lg mt-4" onclick="selectMethod('card')" id="cardBox">
+Credit / Debit Card
+</div>
+
+<div id="cardForm" class="hidden mt-3 space-y-3">
+<input placeholder="Card Number" class="w-full border rounded-lg px-3 py-2">
+<div class="grid grid-cols-2 gap-3">
+<input placeholder="MM/YY" class="border rounded-lg px-3 py-2">
+<input placeholder="CVV" class="border rounded-lg px-3 py-2">
+</div>
+</div>
+
+<!-- NETBANKING -->
+<div class="method p-3 border rounded-lg mt-4" onclick="selectMethod('net')" id="netBox">
+Net Banking
+</div>
+
+<div id="netForm" class="hidden mt-3">
+<select class="w-full border rounded-lg px-3 py-2">
+<option>Select Bank</option>
+<option>SBI</option>
+<option>HDFC</option>
+<option>ICICI</option>
+<option>PNB</option>
+<option>Axis Bank</option>
+</select>
+</div>
+
+<!-- COD -->
+<div class="method p-3 border rounded-lg mt-4" onclick="selectMethod('cod')" id="codBox">
+Cash on Pickup
+</div>
+
+<button onclick="startPayment()"
+class="w-full mt-6 bg-green-600 text-white py-3 rounded-xl font-bold">
+Proceed to Pay
+</button>
+
+</div>
+</div>
+
+<!-- ================= QR MODAL ================= -->
+<div id="qrBox" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center">
+<div class="bg-white p-6 rounded-2xl text-center">
+<h3 class="font-bold mb-3">Scan to Pay</h3>
+
+<img src="data:image/png;base64,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"
+class="w-60 mx-auto rounded-lg">
+
+<p class="text-sm text-gray-500 mt-2">Scan using any UPI app</p>
+<button onclick="confirmQRPayment()" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg">I Have Paid</button>
+<button onclick="closeQR()" class="mt-2 w-full bg-gray-200 py-2 rounded-lg">Cancel</button>
+</div>
+</div>
+
+<!-- PROCESSING -->
+<div id="processing" class="hidden fixed inset-0 bg-white flex flex-col items-center justify-center text-center">
+<div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mb-6"></div>
+<h2 class="text-xl font-bold">Fetching Payment...</h2>
+<p class="text-gray-500 mt-2">Approve payment in your UPI app</p>
+</div>
+
+<!-- ================= CONFIRMATION / INVOICE ================= -->
+<div id="confirmationPage" class="hidden max-w-[700px] mx-auto mt-10 bg-white p-8 rounded-2xl shadow">
+
+<h2 class="text-2xl font-bold text-green-600 text-center mb-4">
+Payment Successful 🎉
+</h2>
+
+<div id="invoiceData" class="space-y-2 text-gray-700"></div>
+
+<hr class="my-4">
+
+<div id="totalPaid" class="flex justify-between text-lg font-bold"></div>
+
+<button onclick="goHistory()"
+class="w-full mt-6 bg-blue-600 text-white py-3 rounded-xl font-bold">
+View Order History
+</button>
+
+</div>
+
+<script>
+
+/* BILL */
+let cart = JSON.parse(localStorage.getItem("canteenCart")) || [];
+let subtotal=0;
+
+cart.forEach(item=>{
+subtotal+=item.price*item.quantity;
+document.getElementById("billItems").innerHTML+=
+`<div class="flex justify-between"><span>${item.name} × ${item.quantity}</span><span>₹${item.price*item.quantity}</span></div>`;
+});
+
+let gst=Math.round(subtotal*0.05);
+let total=subtotal+gst;
+
+document.getElementById("subtotal").innerText="₹"+subtotal;
+document.getElementById("gst").innerText="₹"+gst;
+document.getElementById("total").innerText="₹"+total;
+
+/* METHOD SWITCH */
+function selectMethod(type){
+document.querySelectorAll('.method').forEach(e=>e.classList.remove('active'));
+document.getElementById(type+'Box').classList.add('active');
+
+['upi','card','net'].forEach(f=>{
+let form=document.getElementById(f+'Form');
+if(form) form.classList.add('hidden');
+});
+if(type!=='cod') document.getElementById(type+'Form').classList.remove('hidden');
+}
+
+/* QR */
+function openQR(){document.getElementById("qrBox").classList.remove("hidden");}
+function closeQR(){document.getElementById("qrBox").classList.add("hidden");}
+function confirmQRPayment(){closeQR();processPayment();}
+
+/* PAYMENT PROCESS */
+function startPayment(){processPayment();}
+
+function processPayment(){
+document.getElementById("checkoutPage").style.display="none";
+document.getElementById("processing").classList.remove("hidden");
+
+setTimeout(()=>{
+document.getElementById("processing").classList.add("hidden");
+showInvoice();
+},10000);
+}
+
+/* SHOW INVOICE */
+function showInvoice(){
+
+let token=Math.floor(Math.random()*9000)+1000;
+let date=new Date().toLocaleString();
+
+document.getElementById("confirmationPage").classList.remove("hidden");
+
+document.getElementById("invoiceData").innerHTML=`
+<p><b>Order Token:</b> #${token}</p>
+<p><b>Date:</b> ${date}</p>
+<hr class="my-3">
+`;
+
+cart.forEach(item=>{
+document.getElementById("invoiceData").innerHTML+=
+`<div class="flex justify-between">
+<span>${item.name} × ${item.quantity}</span>
+<span>₹${item.price*item.quantity}</span>
+</div>`;
+});
+
+document.getElementById("totalPaid").innerHTML=`
+<span>Total Paid</span>
+<span class="text-green-600">₹${total}</span>
+`;
+
+/* SAVE HISTORY */
+let orders=JSON.parse(localStorage.getItem("canteenOrders"))||[];
+orders.push({token:token,date:date,items:cart});
+localStorage.setItem("canteenOrders",JSON.stringify(orders));
+localStorage.removeItem("canteenCart");
+}
+
+function goHistory(){
+window.location.href="order-history.html";
+}
+
+</script>
+
+</body>
+</html>
