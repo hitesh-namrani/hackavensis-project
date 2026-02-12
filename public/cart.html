@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bill - CanteenOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap');
+        .receipt-font { font-family: 'Inconsolata', monospace; }
+        .zigzag {
+            background-image: linear-gradient(135deg, white 5px, transparent 5px), linear-gradient(225deg, white 5px, transparent 5px);
+            background-size: 10px 10px;
+            background-repeat: repeat-x;
+            height: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-400 font-sans min-h-screen pb-32">
+
+    <div class="p-6 flex items-center gap-4 text-white sticky top-0 z-20">
+        <a href="menu.html" class="p-2 bg-white/20 rounded-full hover:bg-white/30 backdrop-blur-sm transition shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </a>
+        <h1 class="text-3xl font-black tracking-wide drop-shadow-md">Checkout</h1>
+    </div>
+
+    <div class="max-w-md mx-auto px-4">
+
+        <div id="emptyCart" class="hidden flex flex-col items-center justify-center h-[50vh] text-white">
+            <div class="w-28 h-28 bg-white/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm border-2 border-white/30 animate-pulse">
+                <span class="text-5xl">🍽️</span>
+            </div>
+            <h2 class="text-3xl font-bold mb-2">Your plate is empty!</h2>
+            <p class="text-white/80 mb-8 text-center">Add some yummy food from the menu.</p>
+            <a href="menu.html" class="bg-white text-red-600 px-8 py-3 rounded-full font-black shadow-xl hover:scale-105 transition-transform uppercase tracking-wider">Open Menu</a>
+        </div>
+
+        <div id="cartContent" class="transform transition-all duration-500">
+            
+            <div class="bg-white rounded-t-2xl shadow-2xl overflow-hidden relative">
+                <div class="bg-gray-50 p-6 border-b border-dashed border-gray-300 text-center">
+                    <h2 class="text-3xl font-black text-gray-800 tracking-tighter uppercase mb-1">CanteenOS</h2>
+                    <p class="text-xs text-gray-500 receipt-font tracking-widest">MSIT JANAKPURI • DEL</p>
+                    <p class="text-xs text-gray-400 receipt-font mt-1">ORDER ID: #<span id="orderId">...</span></p>
+                </div>
+
+                <div class="p-6">
+                    <div id="itemsContainer" class="space-y-4 mb-6">
+                        </div>
+
+                    <div class="border-t-2 border-dashed border-gray-200 pt-4 receipt-font text-sm">
+                        <div class="flex justify-between mb-1 text-gray-500">
+                            <span>Item Total</span>
+                            <span>₹<span id="itemTotal">0</span></span>
+                        </div>
+                        <div class="flex justify-between mb-1 text-gray-500">
+                            <span>GST & Taxes (5%)</span>
+                            <span>₹<span id="tax">0</span></span>
+                        </div>
+                        <div class="flex justify-between font-black text-2xl text-gray-900 mt-4 pt-4 border-t border-gray-200">
+                            <span>Total</span>
+                            <span>₹<span id="grandTotal">0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="zigzag absolute bottom-0"></div>
+            </div>
+
+            <div class="bg-white/90 backdrop-blur-md rounded-2xl p-4 mt-4 shadow-lg border border-white/50">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Payment Mode</p>
+                        <p class="text-sm font-bold text-gray-800">UPI / Cash at Counter</p>
+                    </div>
+                    <div class="ml-auto">
+                        <div class="w-6 h-6 border-4 border-green-500 rounded-full flex items-center justify-center">
+                            <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="actionBar" class="fixed bottom-0 left-0 right-0 bg-white p-4 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.2)] z-50">
+        <div class="max-w-md mx-auto">
+            <button onclick="placeOrder()" class="group w-full bg-gray-900 hover:bg-black text-white font-bold py-4 rounded-xl text-lg shadow-2xl active:scale-95 transition-all flex justify-between px-8 items-center">
+                <div class="flex flex-col items-start leading-none">
+                    <span class="text-[10px] text-gray-400 font-normal mb-1">PAYABLE AMOUNT</span>
+                    <span>₹<span id="btnTotal">0</span></span>
+                </div>
+                <span class="flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                    Confirm Order 
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Generate a random Order ID for the receipt
+        document.getElementById('orderId').innerText = Math.floor(1000 + Math.random() * 9000);
+
+        // Load Cart Data
+        let cart = JSON.parse(localStorage.getItem('canteenCart')) || [];
+        
+        const container = document.getElementById('itemsContainer');
+        const emptyCart = document.getElementById('emptyCart');
+        const cartContent = document.getElementById('cartContent');
+        const actionBar = document.getElementById('actionBar');
+
+        // Logic to Render Items
+        if (cart.length === 0) {
+            cartContent.classList.add('hidden');
+            actionBar.classList.add('hidden');
+            emptyCart.classList.remove('hidden');
+        } else {
+            let itemTotal = 0;
+            
+            cart.forEach((item, index) => {
+                itemTotal += item.price * item.quantity;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'flex justify-between items-start group';
+                itemDiv.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 mt-0.5 bg-gray-100 text-gray-500 rounded text-xs flex items-center justify-center font-bold">
+                            ${item.quantity}x
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800 text-base leading-tight">${item.name}</p>
+                            <p class="text-xs text-gray-400 mt-0.5">@ ₹${item.price} each</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end gap-1">
+                        <span class="font-bold text-gray-800">₹${item.price * item.quantity}</span>
+                        <button onclick="removeItem(${index})" class="text-[10px] font-bold text-red-400 hover:text-red-600 uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity">
+                            Remove
+                        </button>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+
+            // Calculate Totals
+            const tax = Math.round(itemTotal * 0.05);
+            const grandTotal = itemTotal + tax;
+
+            // Update UI
+            document.getElementById('itemTotal').innerText = itemTotal;
+            document.getElementById('tax').innerText = tax;
+            document.getElementById('grandTotal').innerText = grandTotal;
+            document.getElementById('btnTotal').innerText = grandTotal;
+        }
+
+        // Remove Function
+        function removeItem(index) {
+            if(confirm('Remove this item?')) {
+                cart.splice(index, 1);
+                localStorage.setItem('canteenCart', JSON.stringify(cart));
+                location.reload();
+            }
+        }
+
+        // Place Order Function (The Final Magic)
+        function placeOrder() {
+            const total = document.getElementById('grandTotal').innerText;
+            const token = Math.floor(100 + Math.random() * 900); // Random Token #
+            
+            if(confirm(`Confirm payment of ₹${total}?`)) {
+                // Clear cart
+                localStorage.removeItem('canteenCart');
+                
+                // Show Success Screen replacing the whole body
+                document.body.innerHTML = `
+                    <div class="flex flex-col items-center justify-center min-h-screen text-white text-center p-6 animate-fade-in">
+                        <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl animate-bounce text-green-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+                        </div>
+                        <h1 class="text-4xl font-black mb-2 drop-shadow-md">Order Successful!</h1>
+                        <p class="text-white/90 mb-8 text-lg">Please wait for your number.</p>
+                        
+                        <div class="bg-white text-gray-900 px-10 py-6 rounded-2xl shadow-2xl mb-8 transform rotate-1">
+                            <p class="text-xs text-gray-400 font-bold tracking-widest uppercase mb-1">Your Token</p>
+                            <p class="text-7xl font-black tracking-tighter text-red-600">#${token}</p>
+                        </div>
+
+                        <a href="menu.html" class="bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-transform">Order More</a>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
