@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CanteenOS - Mega Menu</title>
+    <title>CanteenOS - Menu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .pop { animation: pop 0.2s ease-out; }
@@ -13,16 +13,25 @@
         .menu-item { transition: all 0.3s ease; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-400 font-sans pb-32 min-h-screen">
+<body class="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-400 font-sans pb-10 min-h-screen">
 
     <div class="bg-white/90 backdrop-blur-sm p-4 sticky top-0 shadow-sm z-30 flex justify-between items-center">
         <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            
             <div>
-                <h1 class="text-3xl font-black text-gray-800">CanteenOS</h1>
+                <h1 class="text-2xl font-black text-gray-800">CanteenOS</h1>
                 <p class="text-xs text-gray-500 font-bold tracking-wide">MSIT JANAKPURI</p>
             </div>
+
             <div class="flex items-center gap-4">
-                <span class="hidden md:block font-bold text-gray-700 text-sm">Welcome, Student!</span>
+                
+                <a href="cart.html" class="relative bg-white p-2.5 rounded-full shadow-md hover:scale-110 transition-transform cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span id="cartCount" class="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                </a>
+
                 <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
                     M
                 </div>
@@ -307,17 +316,7 @@
                 </div>
             </div>
 
-        </div> </div> <div id="cartBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-[500px] bg-red-600 text-white p-4 rounded-xl shadow-2xl flex justify-between items-center transform translate-y-24 transition-transform duration-300 z-50 hidden border-2 border-white/20">
-        <div>
-            <p class="font-bold text-base"><span id="totalItems">0</span> ITEMS ADDED</p>
-            <p class="text-xs opacity-90">Extra charges may apply</p>
-        </div>
-        <button onclick="window.location.href='cart.html'" class="bg-white text-red-700 font-bold px-6 py-2 rounded-lg text-sm shadow-sm flex items-center gap-2 active:scale-95 transition-all hover:bg-gray-100">
-            View Cart <span class="bg-red-100 px-2 py-0.5 rounded text-xs ml-1 font-black">₹<span id="totalPrice">0</span></span>
-        </button>
-    </div>
-
-    <script>
+        </div> </div> <script>
         // --- 1. FILTER FUNCTION ---
         function filterMenu(category) {
             const allItems = document.querySelectorAll('.menu-item');
@@ -347,7 +346,7 @@
 
         // --- 2. CART LOGIC ---
         let cart = JSON.parse(localStorage.getItem('canteenCart')) || [];
-        updateCartUI();
+        updateHeaderCartCount();
 
         function addToCart(id, name, price) {
             // Animation
@@ -366,27 +365,20 @@
             else { cart.push({ id, name, price, quantity: 1 }); }
 
             localStorage.setItem('canteenCart', JSON.stringify(cart));
-            updateCartUI();
+            updateHeaderCartCount();
             if (navigator.vibrate) navigator.vibrate(50);
         }
 
-        function updateCartUI() {
-            const cartBar = document.getElementById('cartBar');
-            const totalItemsSpan = document.getElementById('totalItems');
-            const totalPriceSpan = document.getElementById('totalPrice');
-
+        // Update the small badge in the header instead of a big floating bar
+        function updateHeaderCartCount() {
+            const cartCountBadge = document.getElementById('cartCount');
             const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-            if (totalCount > 0) {
-                cartBar.classList.remove('hidden', 'translate-y-24');
-                cartBar.classList.add('translate-y-0');
-                totalItemsSpan.innerText = totalCount;
-                totalPriceSpan.innerText = totalCost;
-            } else {
-                cartBar.classList.add('translate-y-24');
-                setTimeout(() => cartBar.classList.add('hidden'), 300);
-            }
+            
+            cartCountBadge.innerText = totalCount;
+            
+            // Pop animation for badge
+            cartCountBadge.classList.add('scale-125');
+            setTimeout(() => cartCountBadge.classList.remove('scale-125'), 200);
         }
     </script>
 </body>
