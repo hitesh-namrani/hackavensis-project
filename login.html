@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen OS - Access</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0992C2;
+            --secondary: #1A2CA3;
+            --bg-dark: #0a0e1a;
+            --bg-darker: #050810;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --glow: rgba(9, 146, 194, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Background Effects --- */
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(9, 146, 194, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(9, 146, 194, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .orb {
+            position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.4; pointer-events: none; z-index: 0;
+        }
+        .orb-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; right: -100px; animation: float 15s ease-in-out infinite; }
+        .orb-2 { width: 300px; height: 300px; background: var(--secondary); bottom: -50px; left: -50px; animation: float 12s ease-in-out infinite reverse; }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.1); }
+        }
+
+        /* --- Container & Card --- */
+        .container {
+            position: relative; z-index: 1; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center; padding: 2rem;
+        }
+
+        .login-card {
+            background: rgba(15, 20, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(9, 146, 194, 0.2);
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%; max-width: 440px;
+            box-shadow: 0 0 60px rgba(9, 146, 194, 0.15), inset 0 0 40px rgba(9, 146, 194, 0.03);
+            transition: height 0.3s ease;
+        }
+
+        /* --- Logo --- */
+        .logo-section { text-align: center; margin-bottom: 2rem; }
+        .logo { display: inline-block; margin-bottom: 1rem; animation: logoGlow 3s ease-in-out infinite; }
+        @keyframes logoGlow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(9, 146, 194, 0.5)); }
+            50% { filter: drop-shadow(0 0 30px rgba(9, 146, 194, 0.8)); }
+        }
+        .logo-text {
+            font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        .logo-subtext { font-size: 0.875rem; color: var(--text-secondary); font-weight: 300; margin-top: 0.5rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* --- Form Elements --- */
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; }
+        
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1.125rem; pointer-events: none; }
+        
+        input {
+            width: 100%; padding: 1rem 1rem 1rem 3rem;
+            background: rgba(9, 146, 194, 0.05);
+            border: 1.5px solid rgba(9, 146, 194, 0.2);
+            border-radius: 12px;
+            color: var(--text-primary); font-size: 1rem; font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+        }
+        input:focus { outline: none; border-color: var(--primary); background: rgba(9, 146, 194, 0.1); box-shadow: 0 0 0 4px rgba(9, 146, 194, 0.1); }
+
+        .password-toggle {
+            position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 0.5rem;
+        }
+        .password-toggle:hover { color: var(--primary); }
+
+        /* --- Buttons & Links --- */
+        .action-btn {
+            width: 100%; padding: 1.125rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none; border-radius: 12px;
+            color: white; font-size: 1rem; font-weight: 600;
+            cursor: pointer; position: relative; overflow: hidden;
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; font-family: 'Outfit', sans-serif;
+            margin-top: 1rem;
+        }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(9, 146, 194, 0.4); }
+
+        .options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-size: 0.875rem; }
+        .remember-me { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-secondary); }
+        .link-text { color: var(--primary); text-decoration: none; transition: color 0.2s; cursor: pointer; }
+        .link-text:hover { color: var(--secondary); text-decoration: underline; }
+
+        /* --- Footer Status --- */
+        .status-indicator {
+            display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem;
+            padding: 0.5rem 1rem; background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 20px;
+            font-size: 0.75rem; color: #22c55e;
+        }
+        .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* --- Utility & Animation --- */
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .toggle-prompt { text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+        <div class="login-card">
+            <div class="logo-section">
+                <div class="logo">
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="5" width="50" height="50" rx="12" stroke="url(#gradient)" stroke-width="2"/>
+                        <path d="M20 25 L30 35 L40 25" stroke="url(#gradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="30" cy="30" r="3" fill="url(#gradient)"/>
+                        <defs>
+                            <linearGradient id="gradient" x1="0" y1="0" x2="60" y2="60">
+                                <stop offset="0%" stop-color="#0992C2"/>
+                                <stop offset="100%" stop-color="#1A2CA3"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h1 class="logo-text">CANTEEN OS</h1>
+                <p class="logo-subtext" id="headerSubtext">Queue-Free Ordering</p>
+            </div>
+
+            <form id="loginForm" class="fade-in">
+                <div class="form-group">
+                    <label for="loginRollNo">Roll Number</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📋</span>
+                        <input type="text" id="loginRollNo" placeholder="MSIT_XXX" pattern="[A-Z]{2,4}_\d{3}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                        <button type="button" class="password-toggle" onclick="togglePass('loginPassword', this)">👁️</button>
+                    </div>
+                </div>
+
+                <div class="options">
+                    <label class="remember-me">
+                        <input type="checkbox"> <span>Remember me</span>
+                    </label>
+                    <a href="#" class="link-text">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="action-btn">Access Canteen</button>
+
+                <div class="toggle-prompt">
+                    New Student? <span class="link-text" onclick="switchForm('signup')">Create Account</span>
+                </div>
+            </form>
+
+            <form id="signupForm" class="hidden fade-in">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="fullName" placeholder="John Doe" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupRollNo">Roll Number</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📋</span>
+                        <input type="text" id="signupRollNo" placeholder="MSIT_045" pattern="[A-Z]{2,4}_\d{3}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📱</span>
+                        <input type="tel" id="phone" placeholder="9876543210" pattern="[0-9]{10}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Create Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="signupPassword" placeholder="••••••••" required>
+                        <button type="button" class="password-toggle" onclick="togglePass('signupPassword', this)">👁️</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="action-btn">Sign Up</button>
+
+                <div class="toggle-prompt">
+                    Already have an account? <span class="link-text" onclick="switchForm('login')">Login Here</span>
+                </div>
+            </form>
+
+            <center>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>System Online • 0 Queue</span>
+                </div>
+            </center>
+        </div>
+    </div>
+
+    <script>
+        // --- Form Switching Logic ---
+        function switchForm(target) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const subtext = document.getElementById('headerSubtext');
+
+            if (target === 'signup') {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                subtext.textContent = "Create New Account";
+            } else {
+                signupForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                subtext.textContent = "Queue-Free Ordering";
+            }
+        }
+
+        // --- Password Toggle ---
+        function togglePass(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            btn.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        }
+
+        // --- Auto Uppercase Roll No ---
+        ['loginRollNo', 'signupRollNo'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+        });
+
+        // --- Mock Submission ---
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const btn = form.querySelector('.action-btn');
+                const originalText = btn.textContent;
+                
+                btn.textContent = 'Processing...';
+                btn.style.opacity = '0.7';
+                
+                setTimeout(() => {
+                    btn.textContent = '✓ Success!';
+                    btn.style.background = '#22c55e';
+                    setTimeout(() => {
+                        alert("Action Successful! (Connecting to Backend...)");
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                        btn.style.opacity = '1';
+                    }, 1000);
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>
