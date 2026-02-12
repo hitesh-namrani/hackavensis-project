@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CanteenOS - Mega Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .pop { animation: pop 0.2s ease-out; }
+        @keyframes pop { 50% { transform: scale(0.95); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .menu-item { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-400 font-sans pb-32 min-h-screen">
+
+    <div class="bg-white/90 backdrop-blur-sm p-4 sticky top-0 shadow-sm z-30 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-black text-gray-800">CanteenOS</h1>
+                <p class="text-xs text-gray-500 font-bold tracking-wide">MSIT JANAKPURI</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="hidden md:block font-bold text-gray-700 text-sm">Welcome, Student!</span>
+                <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                    M
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4">
+
+        <div class="flex gap-3 overflow-x-auto py-6 no-scrollbar sticky top-[72px] z-20">
+            <button onclick="filterMenu('all')" class="filter-btn active bg-black text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg hover:scale-105 transition-all border-2 border-transparent">All Items</button>
+            <button onclick="filterMenu('snacks')" class="filter-btn bg-white/90 text-gray-800 border-2 border-transparent px-6 py-2 rounded-full text-sm font-bold shadow-md whitespace-nowrap hover:bg-white hover:scale-105 transition-all">Snacks</button>
+            <button onclick="filterMenu('lunch')" class="filter-btn bg-white/90 text-gray-800 border-2 border-transparent px-6 py-2 rounded-full text-sm font-bold shadow-md whitespace-nowrap hover:bg-white hover:scale-105 transition-all">Lunch</button>
+            <button onclick="filterMenu('chinese')" class="filter-btn bg-white/90 text-gray-800 border-2 border-transparent px-6 py-2 rounded-full text-sm font-bold shadow-md whitespace-nowrap hover:bg-white hover:scale-105 transition-all">Chinese</button>
+            <button onclick="filterMenu('south')" class="filter-btn bg-white/90 text-gray-800 border-2 border-transparent px-6 py-2 rounded-full text-sm font-bold shadow-md whitespace-nowrap hover:bg-white hover:scale-105 transition-all">South Indian</button>
+            <button onclick="filterMenu('drinks')" class="filter-btn bg-white/90 text-gray-800 border-2 border-transparent px-6 py-2 rounded-full text-sm font-bold shadow-md whitespace-nowrap hover:bg-white hover:scale-105 transition-all">Drinks</button>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="menuGrid">
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="snacks">
+                <div class="relative w-full h-[383px]">
+                    <img src="images/samosa.jpg" onerror="this.src='https://images.unsplash.com/photo-1601050690597-df056fb47795?w=383&q=80'" class="w-full h-full object-cover">
+                    <button onclick="addToCart('samosa', 'Aloo Samosa', 20)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Aloo Samosa</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹20</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.5</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="snacks">
+                <div class="relative w-full h-[383px]">
+                    <img src="images/patties.jpg" onerror="this.src='https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=383&q=80'" class="w-full h-full object-cover">
+                    <button onclick="addToCart('patties', 'Aloo Patties', 25)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Masala Patties</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹25</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.2</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="snacks">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('burger', 'Veg Burger', 60)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Veg Burger</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹60</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.0</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="snacks">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('sandwich', 'Grilled Sandwich', 85)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Grilled Sandwich</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹85</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.6</span></div>
+                </div>
+            </div>
+            
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="snacks">
+                <div class="relative w-full h-[383px]">
+                    <img src="images/vadapav.jpg" onerror="this.src='https://images.unsplash.com/photo-1606491956689-2ea28c674675?w=383&q=80'" class="w-full h-full object-cover">
+                    <button onclick="addToCart('vadapav', 'Vada Pav', 40)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Mumbai Vada Pav</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹40</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.8</span></div>
+                </div>
+            </div>
+
+             <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="snacks">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('fries', 'Peri Peri Fries', 70)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Peri Peri Fries</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹70</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.4</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="chinese">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('momos', 'Veg Momos', 60)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Veg Momos</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹60</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.9</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="chinese">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('maggi', 'Masala Maggi', 40)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Masala Maggi</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹40</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.8</span></div>
+                </div>
+            </div>
+            
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="chinese">
+                <div class="relative w-full h-[383px]">
+                    <img src="images/springroll.jpg" onerror="this.src='https://images.unsplash.com/photo-1544025162-d76690b67f66?w=383&q=80'" class="w-full h-full object-cover">
+                    <button onclick="addToCart('springroll', 'Spring Roll', 50)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Veg Spring Roll</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹50</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.1</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="chinese">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('chowmein', 'Veg Chowmein', 80)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Veg Chowmein</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹80</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.3</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="chinese">
+                <div class="relative w-full h-[383px]">
+                    <img src="images/manchurian.jpg" onerror="this.src='https://images.unsplash.com/photo-1563245372-f21724e3856d?w=383&q=80'" class="w-full h-full object-cover">
+                    <button onclick="addToCart('manchurian', 'Veg Manchurian', 90)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Veg Manchurian</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹90</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.5</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="south">
+                <div class="relative w-full h-[383px]">
+                    <img src="images/dosa.jpg" onerror="this.src='https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=383&q=80'" class="w-full h-full object-cover">
+                    <button onclick="addToCart('dosa', 'Masala Dosa', 90)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Masala Dosa</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹90</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.7</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="south">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('idli', 'Idli Sambar', 60)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Idli Sambar (2pcs)</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹60</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.6</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="south">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('uttapam', 'Veg Uttapam', 80)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Onion Uttapam</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹80</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.4</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="lunch">
+                <div class="relative w-full h-[383px]">
+                    <img src="images/chole.jpg" onerror="this.src='https://images.unsplash.com/photo-1626074353765-517a681e40be?w=383&q=80'" class="w-full h-full object-cover">
+                    <button onclick="addToCart('chole', 'Chole Bhature', 120)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Chole Bhature</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹120</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.7</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="lunch">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('rajma', 'Rajma Chawal', 90)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Rajma Chawal</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹90</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.5</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="lunch">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('thali', 'Veg Thali', 180)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Deluxe Thali</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹180</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.6</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="lunch">
+                <div class="relative w-full h-[383px]">
+                    <img src="images/dal.jpg" onerror="this.src='https://images.unsplash.com/photo-1626500145028-090c885da386?w=383'" class="w-full h-full object-cover">
+                    <button onclick="addToCart('dalmakhani', 'Dal Makhani Combo', 150)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Dal Makhani Combo</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹150</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.8</span></div>
+                </div>
+            </div>
+            
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="lunch">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('paneer', 'Paneer Naan Combo', 160)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Shahi Paneer Combo</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹160</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.7</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="drinks">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('oreo', 'Oreo Shake', 80)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Oreo Shake</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹80</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.8</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="drinks">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('coffee', 'Cold Coffee', 60)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Cold Coffee</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹60</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.5</span></div>
+                </div>
+            </div>
+
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="drinks">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('coke', 'Chilled Coke', 40)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Chilled Coke</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹40</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.9</span></div>
+                </div>
+            </div>
+            
+            <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="drinks">
+                <div class="relative w-full h-[383px]">
+                    <img src="images/chai.jpg" onerror="this.src='https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=383&q=80'" class="w-full h-full object-cover">
+                    <button onclick="addToCart('chai', 'Masala Chai', 20)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Masala Chai</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹20</span><span class="text-xs text-yellow-500 font-bold">⭐ 5.0</span></div>
+                </div>
+            </div>
+
+             <div class="menu-item bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300" data-category="drinks">
+                <div class="relative w-full h-[383px]">
+                    <img src="https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?w=383&q=80" class="w-full h-full object-cover">
+                    <button onclick="addToCart('lassi', 'Sweet Lassi', 50)" class="absolute bottom-3 right-3 bg-white text-red-600 text-xs font-black px-4 py-2 rounded-lg shadow-lg uppercase hover:bg-red-50">ADD</button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-800 text-base truncate">Sweet Lassi</h3>
+                    <div class="mt-2 flex justify-between items-center"><span class="font-bold text-lg text-gray-900">₹50</span><span class="text-xs text-yellow-500 font-bold">⭐ 4.7</span></div>
+                </div>
+            </div>
+
+        </div> </div> <div id="cartBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-[500px] bg-red-600 text-white p-4 rounded-xl shadow-2xl flex justify-between items-center transform translate-y-24 transition-transform duration-300 z-50 hidden border-2 border-white/20">
+        <div>
+            <p class="font-bold text-base"><span id="totalItems">0</span> ITEMS ADDED</p>
+            <p class="text-xs opacity-90">Extra charges may apply</p>
+        </div>
+        <button onclick="window.location.href='cart.html'" class="bg-white text-red-700 font-bold px-6 py-2 rounded-lg text-sm shadow-sm flex items-center gap-2 active:scale-95 transition-all hover:bg-gray-100">
+            View Cart <span class="bg-red-100 px-2 py-0.5 rounded text-xs ml-1 font-black">₹<span id="totalPrice">0</span></span>
+        </button>
+    </div>
+
+    <script>
+        // --- 1. FILTER FUNCTION ---
+        function filterMenu(category) {
+            const allItems = document.querySelectorAll('.menu-item');
+            const allBtns = document.querySelectorAll('.filter-btn');
+            
+            // Highlight Button
+            allBtns.forEach(btn => {
+                if(btn.textContent.toLowerCase().includes(category) || (category === 'all' && btn.textContent.includes('All'))) {
+                    btn.classList.add('bg-black', 'text-white', 'border-black', 'scale-105');
+                    btn.classList.remove('bg-white/90', 'text-gray-800', 'border-transparent');
+                } else {
+                    btn.classList.remove('bg-black', 'text-white', 'border-black', 'scale-105');
+                    btn.classList.add('bg-white/90', 'text-gray-800', 'border-transparent');
+                }
+            });
+
+            // Show/Hide Items
+            allItems.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                if (category === 'all' || itemCategory === category) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // --- 2. CART LOGIC ---
+        let cart = JSON.parse(localStorage.getItem('canteenCart')) || [];
+        updateCartUI();
+
+        function addToCart(id, name, price) {
+            // Animation
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.classList.add('pop', 'bg-green-600', 'text-white');
+            btn.innerText = "✓";
+            setTimeout(() => { 
+                btn.classList.remove('pop', 'bg-green-600', 'text-white'); 
+                btn.innerText = originalText;
+            }, 1000);
+
+            // Add Item
+            const existingItem = cart.find(item => item.id === id);
+            if (existingItem) { existingItem.quantity++; } 
+            else { cart.push({ id, name, price, quantity: 1 }); }
+
+            localStorage.setItem('canteenCart', JSON.stringify(cart));
+            updateCartUI();
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function updateCartUI() {
+            const cartBar = document.getElementById('cartBar');
+            const totalItemsSpan = document.getElementById('totalItems');
+            const totalPriceSpan = document.getElementById('totalPrice');
+
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            if (totalCount > 0) {
+                cartBar.classList.remove('hidden', 'translate-y-24');
+                cartBar.classList.add('translate-y-0');
+                totalItemsSpan.innerText = totalCount;
+                totalPriceSpan.innerText = totalCost;
+            } else {
+                cartBar.classList.add('translate-y-24');
+                setTimeout(() => cartBar.classList.add('hidden'), 300);
+            }
+        }
+    </script>
+</body>
+</html>
