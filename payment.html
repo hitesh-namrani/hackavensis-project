@@ -1,230 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CanteenOS Checkout</title>
-<script src="https://cdn.tailwindcss.com"></script>
-
-<style>
-.hidden{display:none;}
-.method{cursor:pointer;transition:.2s;}
-.method:hover{background:#f1f5f9;}
-.active{border:2px solid #2563eb;background:#eff6ff;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - CanteenOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .hidden { display: none; }
+        .method { cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+        .method:hover { background: #f3f4f6; }
+        /* Active State: Blue Border & Light Blue BG (Secure Feel) */
+        .active { border-color: #2563eb; background: #eff6ff; position: relative; }
+        .active::after { content: '✓'; position: absolute; right: 15px; top: 15px; color: #2563eb; font-weight: bold; }
+    </style>
 </head>
 
-<body class="bg-gradient-to-b from-blue-50 to-white min-h-screen font-sans">
+<body class="bg-gray-50 min-h-screen font-sans pb-10">
 
-<!-- HEADER -->
-<div class="bg-white shadow p-4 flex justify-between">
-<h1 class="text-2xl font-bold text-blue-700">CanteenOS</h1>
-<span class="text-sm text-gray-600 font-semibold">🔒 Secure Payment</span>
-</div>
+    <div class="bg-white shadow-sm p-4 flex items-center justify-between sticky top-0 z-20">
+        <div class="flex items-center gap-3">
+            <a href="cart.html" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+            </a>
+            <h1 class="text-xl font-bold text-gray-800">Secure Payment</h1>
+        </div>
+        <div class="text-green-600 flex items-center gap-1 text-xs font-bold bg-green-50 px-2 py-1 rounded">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+            Encrypted
+        </div>
+    </div>
 
-<!-- ================= CHECKOUT PAGE ================= -->
-<div id="checkoutPage" class="max-w-[900px] mx-auto mt-8 p-4 space-y-6">
+    <div id="checkoutPage" class="max-w-md mx-auto px-4 mt-6 space-y-6">
 
-<!-- BILL -->
-<div class="bg-white rounded-2xl shadow p-6">
-<h2 class="font-bold text-lg mb-3">Order Summary</h2>
-<div id="billItems"></div>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+            <h2 class="font-bold text-gray-700 text-sm uppercase tracking-wide mb-3">Order Details</h2>
+            <div id="billItems" class="space-y-2 text-sm text-gray-600 mb-4 max-h-32 overflow-y-auto"></div>
 
-<div class="border-t mt-4 pt-3">
-<div class="flex justify-between"><span>Subtotal</span><span id="subtotal"></span></div>
-<div class="flex justify-between"><span>GST (5%)</span><span id="gst"></span></div>
-<div class="flex justify-between font-bold text-lg">
-<span>Total</span><span class="text-green-600" id="total"></span>
-</div>
-</div>
-</div>
+            <div class="border-t border-dashed border-gray-200 pt-3">
+                <div class="flex justify-between text-sm"><span>Subtotal</span><span id="subtotal"></span></div>
+                <div class="flex justify-between text-sm"><span>Tax (5%)</span><span id="gst"></span></div>
+                <div class="flex justify-between font-black text-xl text-gray-900 mt-2">
+                    <span>To Pay</span><span id="total" class="text-blue-600"></span>
+                </div>
+            </div>
+        </div>
 
-<!-- PAYMENT METHODS -->
-<div class="bg-white rounded-2xl shadow p-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+            <h2 class="font-bold text-gray-700 text-sm uppercase tracking-wide mb-4">Payment Method</h2>
 
-<h2 class="font-bold text-lg mb-4">Select Payment Method</h2>
+            <div class="method p-4 bg-gray-50 rounded-xl mb-3 border border-gray-100" onclick="selectMethod('upi')" id="upiBox">
+                <div class="font-bold text-gray-800 flex items-center gap-2">📱 UPI Apps</div>
+                <div class="text-xs text-gray-500 mt-1">Google Pay, PhonePe, Paytm</div>
+            </div>
+            
+            <div id="upiForm" class="hidden mb-4 p-4 bg-blue-50 rounded-xl border border-blue-100 animate-fade-in">
+                <input id="upiId" type="text" placeholder="Enter UPI ID (e.g. kavya@okhdfc)" class="w-full bg-white border border-gray-300 rounded-lg px-3 py-3 text-sm mb-3 focus:outline-none focus:border-blue-500">
+                <button onclick="openQR()" class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800 transition shadow-lg">Scan QR Code</button>
+            </div>
 
-<!-- UPI -->
-<div class="method p-3 border rounded-lg mb-3" onclick="selectMethod('upi')" id="upiBox">
-UPI (GPay / PhonePe / Paytm)
-</div>
+            <div class="method p-4 bg-gray-50 rounded-xl mb-3 border border-gray-100" onclick="selectMethod('card')" id="cardBox">
+                <div class="font-bold text-gray-800 flex items-center gap-2">💳 Cards</div>
+                <div class="text-xs text-gray-500 mt-1">Credit & Debit Cards</div>
+            </div>
 
-<div id="upiForm" class="hidden mt-3 space-y-3">
-<input id="upiId" type="text" placeholder="Enter UPI ID" class="w-full border rounded-lg px-3 py-2">
-<button onclick="openQR()" class="w-full bg-blue-600 text-white py-2 rounded-lg">Scan QR Instead</button>
-</div>
+            <div id="cardForm" class="hidden mb-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                <input placeholder="Card Number" class="w-full bg-white border rounded-lg px-3 py-2 mb-3 text-sm">
+                <div class="grid grid-cols-2 gap-3">
+                    <input placeholder="MM/YY" class="bg-white border rounded-lg px-3 py-2 text-sm">
+                    <input placeholder="CVV" class="bg-white border rounded-lg px-3 py-2 text-sm">
+                </div>
+            </div>
 
-<!-- CARD -->
-<div class="method p-3 border rounded-lg mt-4" onclick="selectMethod('card')" id="cardBox">
-Credit / Debit Card
-</div>
+            <div class="method p-4 bg-gray-50 rounded-xl mb-3 border border-gray-100" onclick="selectMethod('cod')" id="codBox">
+                <div class="font-bold text-gray-800 flex items-center gap-2">💵 Cash</div>
+                <div class="text-xs text-gray-500 mt-1">Pay at Counter</div>
+            </div>
 
-<div id="cardForm" class="hidden mt-3 space-y-3">
-<input placeholder="Card Number" class="w-full border rounded-lg px-3 py-2">
-<div class="grid grid-cols-2 gap-3">
-<input placeholder="MM/YY" class="border rounded-lg px-3 py-2">
-<input placeholder="CVV" class="border rounded-lg px-3 py-2">
-</div>
-</div>
+            <button onclick="startPayment()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-all">
+                Pay Securely
+            </button>
+        </div>
+        
+        <div class="flex justify-center gap-4 opacity-50 grayscale">
+            <div class="h-6 w-10 bg-gray-300 rounded"></div>
+            <div class="h-6 w-10 bg-gray-300 rounded"></div>
+            <div class="h-6 w-10 bg-gray-300 rounded"></div>
+        </div>
+    </div>
 
-<!-- NETBANKING -->
-<div class="method p-3 border rounded-lg mt-4" onclick="selectMethod('net')" id="netBox">
-Net Banking
-</div>
+    <div id="qrBox" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-sm w-full">
+            <h3 class="font-bold text-xl mb-4 text-gray-800">Scan QR to Pay</h3>
+            <div class="bg-white p-2 rounded-xl border-2 border-dashed border-gray-300 inline-block mb-4">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=canteen@upi&pn=CanteenOS&am=100" class="w-48 h-48">
+            </div>
+            <p class="text-sm text-gray-500 mb-6 font-medium">Scan with any UPI App</p>
+            <button onclick="confirmQRPayment()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition">Payment Complete</button>
+            <button onclick="closeQR()" class="mt-3 w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-bold hover:bg-gray-200 transition">Cancel</button>
+        </div>
+    </div>
 
-<div id="netForm" class="hidden mt-3">
-<select class="w-full border rounded-lg px-3 py-2">
-<option>Select Bank</option>
-<option>SBI</option>
-<option>HDFC</option>
-<option>ICICI</option>
-<option>PNB</option>
-<option>Axis Bank</option>
-</select>
-</div>
+    <div id="processing" class="hidden fixed inset-0 bg-white flex flex-col items-center justify-center text-center z-50">
+        <div class="animate-spin rounded-full h-16 w-16 border-[6px] border-gray-100 border-t-blue-600 mb-6"></div>
+        <h2 class="text-2xl font-black text-gray-800">Processing...</h2>
+        <p class="text-gray-500 mt-2 font-medium">Do not close this window</p>
+    </div>
 
-<!-- COD -->
-<div class="method p-3 border rounded-lg mt-4" onclick="selectMethod('cod')" id="codBox">
-Cash on Pickup
-</div>
+    <div id="confirmationPage" class="hidden fixed inset-0 bg-gray-50 z-50 overflow-y-auto">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center border border-gray-100">
+                
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-4xl">🎉</span>
+                </div>
 
-<button onclick="startPayment()"
-class="w-full mt-6 bg-green-600 text-white py-3 rounded-xl font-bold">
-Proceed to Pay
-</button>
+                <h2 class="text-2xl font-black text-gray-800 mb-1">Order Placed!</h2>
+                <p class="text-gray-500 mb-6 text-sm">Your payment was successful.</p>
 
-</div>
-</div>
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-6">
+                    <p class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-1">Token Number</p>
+                    <p class="text-6xl font-black text-blue-600 tracking-tighter" id="tokenDisplay">#0000</p>
+                </div>
 
-<!-- ================= QR MODAL ================= -->
-<div id="qrBox" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center">
-<div class="bg-white p-6 rounded-2xl text-center">
-<h3 class="font-bold mb-3">Scan to Pay</h3>
+                <div id="invoiceData" class="space-y-2 text-gray-700 text-sm text-left mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100"></div>
 
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAe1BMVEX///8DBAUAAABhYWENDhDh4eEZGxygoKAmJifKysqmpqf29vZ4eHiys7NISEnq6urX19cgISNgYGBZWVkTFRfGxsZpaWp/f38JCw5QUFCSkpKenp7e3t7T09OMjI27u7s/Pz8tLi9zc3Px8fE3ODmsrKxERER8fHyFhYZnTmnzAAAKuUlEQVR4nO2d60LqOhCFbSxUUSwXQaAoinLw/Z/w7MwEutIktMUgsPesX72l6QfNbTKT3tyIRCKRSCQSiUQikUgkEolEIpFIJBKJRCKRaKdidNtUozUnmeud8YS2V2M6sdTbD9m4vHaaQyYTOjHnnXWLHIsIhCPVXDNOwjs9/oFou3tPhGu8uAOZ9PgQ78xa5DiKQHirkqZSXUNIO0yY6R11x4SP5b1UahPSMd7ptsjxVgiFcE9YWyAsQtKmfHZDeLMNE0I57LbIMRqhuqup1O4UEFJdejvN/qjHybsveqd4ChGusC7ttsgxHmHdnW6RkJWWP3WCv7uP0FK3RY5nJTxcnIRQCC+O0K0FL5PwoePqAa4yhEt9PLcIh3elmMAQ5nyXEGFdjrEJO8NZams27LiEik5hxTnM7kt9I+Gtvjj5CBHW5Rid0O0Uz3yElZZh3+KzekjIHfvnIGFNjtEJ02rtUf4VSOhUK2HCUAFumKMQCmFswgctM9xIB7Qzxj731RM+bNaPj4/bOV2bTB9JPdLfQrh2O+OZm+M1Ez66Z4RQCM9JiP2QIVoxrA74FROqjyfQov9HG65Fh3Tka0Y765U+s7pKwuIz3+seTBpq3dGHVnfwhw6vkhDbuE4KzcQjDX/ukfAq+zRVwjKJRciHhPD3CNuMDz2EfMLzll7O+LDFGN/YvPOJHtb3iVBRajWiQ9mwPHQ5Y/w2dprlJ233Um2aGfL/tSCrzOKZDvE795ZflJ2m7qqueyLDzja/uD08VNPi//S5mujHhFBJ7AjhkBD+8LmaSAjxqiChqei5et206Hn/9Lma6Nj5w/GqJNzNH055YrHQOy8MwoTnnz88Zg7YneW+eeQWn7a5xTeE558DbqZm8/hWn2ZPSEmQsFmOQiiEWm18okwHOlQObcIhXcWEGyR8bpFjDJ+o9azbVM9fhlDvqP5hwtevZ51kuun1epspEtKJZpqtIxD+UEFCo9uyYkxU4B6XrXpCKFVnesafSQiF8PJlCF9pZ+sSjs5f08xDTdFH7l7FO7zNDsrW2IK3mXDCR76Xg8Fg+WYQISFr6cl4CTnOIxCG+jTqKa9eFezT2AmDfRpzPmSGNKdPY00UQiG8aMKxVcqR8NMi1EoNISkDQk9N04ww99Q0OeQ4jkA46ZVazMonUQn2uakD3Vun1B1+09vZsiRU3W86ND88erIIN9R/v/vuVfV9BzlOIhCicssdD2UZI5aQxLJibFsQsinZcjVi/UlY5hhbbqnYPZU1kB0ECOtGwBVC+GkqhGVCIRRChzDQgSuNEU45dCNKdoRd6KJ5CDkkbOghxIQxtNL224JNEvltIHButNZG3owtvqPvbC9PRIkhHEz1vcb9EGGfjMQjSpjhb2YljKFxo3Zn5LaH2IJ62kNLde3hJhqOR0fMWxy2BrYipJKvVLw/LPjsQvgvEGrtLMIeLFCYkM9bhOyL8QuE4xycBHLHeSAf6ZCR4c4i7BJCRMlwPYB7IaHigJMF3HjCSTLXUyE2YUKOHh/ccG9VxQMkVS8UK/IaIKxGlIDTiEX4SjcBB5PZHSVcvSeOt0lkQvP+7LsmgRb/JkRY8dXXmh2Iki3FCfMnODQ7DSE+aK0jbC1hUg5kvYTVhHkw+FQIhbAk5CKQ0pB6vzRCeeJPP/hhr4YRJR3rEIn2bMKJPtR5hww5FGWfWSRC9U42gw0/1STT22udo5ot6IQJDyFtQ4RWRIkhLPgQ3f6bk6OnZjrSh6Yvvf0s4z4URWsdYwwVbPH7RJiiXQg72z7CNf4VTDiGrsLSTW+OcIu/saxapBiWqDpCsO0FdWBNBezuDULja+WOscyZk/pECeHVEAZHwBahZTfePVcpK6LEEO4KcEm4rCHMVDWXKISZruzWbBX5BMOsqUuxSrTqUjXfQp0HFmHz1KYSfueKlerStxrCCWby0WjM00TY7lRm8+Bls5ooJszg4CBYS1pWDj9gOT7ETEbRCFHheRJLTHh4gqWNvOPDeDMzQvhXEmJl1orQqQsPlEDMxE+oFcOvjeUGhqQcXZf276t6DREqKzqEr4J72YBJedWOsDOBTOb6AjWNRugJDCm4MsU1PYyChAuw8PQ5ZoYiSvKFS8iWoQna2jYpLB/C98r9j3uEPIEhfeW+ee5VFiEeCs7MGEKI7Cr7NKDYMzOeoIJ+sP06HSGcF0IhdAmh8uaZoFWw2+UWlDxIuHNLQDhoB3IktHre8QjfaMpwRNN4b9xCvNM04XgBgSG3PZo/5F+A5g8LngnmacBxEiLke73jv0NL2WW8xicl3BG+FuXEZMaP9RaBkGcG+Z3JseFmfxrPX2HNARf457uEnhbfvCLw1py4xQ/FARufKF9QgTOP7yuaGAfsK8CQ8MS9NiG8fsIRvO+dBArVvhyWNZvpdNiEIJyOry+Hv0VIESUp93A7HxTswVX/R+F4mbFfm6lp+mzFhfCQdNorfdHMn5+yX5xVl0KQiSFcO95txvwRe/RkZC1RghbhFK9SUAkb8bTcGj2Ggu2hz+JhKTkdYZ1R0MgNBW3mE9VGQiiE/y7hFAs8Rj+YKc7XgY6hoPpRzZe08wAJpzXxFp4KBSufX6hpauV5nqC3ck3MjBlbcFz4htsXrr2np2wt6uQO9jxuokY1cU/u+DC+r/4REkKUEF4ooaM0WNPUxAH7CGPXNEfEchduPxkttz1VDUXxxHLv+vquJcqknkUePTXTc/3tbryGXU88/ihEaM1onGlNhVpCSBJaU6HOmmiSC6EQloS1RfBYQssMyefTcDl0FM+a2GqNIdYmK0NRPslgXLy6hJYpmRNSxIix9VqEq3E12ygW4aPXieIfmR1xllhxWi8bvAK17eGJdDShu8CjZ60vu1S59xXCGBJCvMoitLomHBjiIbywcthw7UvWl/Zh6O5Mydq7IIWPXO0Au+VnSxLlhqoYT4WiU7ol8EMsMZI8HmHD9UtZFB5yzxb+B9qedFzCl/KzJYkTqGL7pKgtm7A+9J41BxKRsNkatDUK9mmCfh3VxWvLlic6YbN1hI8mPCyfGVIIz0UIChPiW3pphLwOO1eyD7jjIVzolds/C5fQLoh0BBdz54R5jBr1CEJaUf+drbj9d70zxknT5aa/12pMi+x/uOOi/2jB/QJX4rAW5OdMvs9DqKB5D4bV729ffRnNjT05Wn9r7NHT0WuyB5dGwNt7FMzRd5UQCuGRhOBSUUvo1JuVHN3zCQ6wz0TI7hnTEGFngxElFH1iWfitYRdFp2zneP5pe4rovGO+M5MECCf42ZIuBYu8Bgi1I84+NHN33sR0npMQrwouM2POu5Fdv+hfKoR/GWHDb5QgHClMyOef2xBilz06YcNvlMCDJrD4gyXPN0qaEZqvnJ5mjN/QToMPagJD3LATzzdKGhGqdHJCO03dVR7C4Out3OLUkPAkKw78mLBmGTQhFMLzE1phDJZwYbmBO7YNe33FJmw1f4iEnNBElEyzqgo0bwxMl70aUZKo/8q4E5XALGK8+cOW3yjB1xDP17RhA3vYhVWuu43/dAzCRqpbzawhYWh5Xt8dz/kFDyG8HMI2PlEzQxhSLSFcVQTvErscFoEFPT0amS+GzAPnx6vDWeUcycdefq7jhS/HeKuYikQikUgkEolEIpFIJBKJRCKRSCQSiUQi0fXrf2QL6ARilttoAAAAAElFTkSuQmCC"
-class="w-60 mx-auto rounded-lg">
+                <div id="totalPaid" class="flex justify-between text-lg font-bold border-t pt-4"></div>
 
-<p class="text-sm text-gray-500 mt-2">Scan using any UPI app</p>
-<button onclick="confirmQRPayment()" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg">I Have Paid</button>
-<button onclick="closeQR()" class="mt-2 w-full bg-gray-200 py-2 rounded-lg">Cancel</button>
-</div>
-</div>
+                <button onclick="goHome()" class="w-full mt-6 bg-gray-900 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-black transition-transform">
+                    Return to Menu
+                </button>
+            </div>
+        </div>
+    </div>
 
-<!-- PROCESSING -->
-<div id="processing" class="hidden fixed inset-0 bg-white flex flex-col items-center justify-center text-center">
-<div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mb-6"></div>
-<h2 class="text-xl font-bold">Fetching Payment...</h2>
-<p class="text-gray-500 mt-2">Approve payment in your UPI app</p>
-</div>
+    <script>
+        /* 1. LOAD BILL DATA */
+        let cart = JSON.parse(localStorage.getItem("canteenCart")) || [];
+        
+        // Redirect if empty
+        if(cart.length === 0) { window.location.href = 'items.html'; }
 
-<!-- ================= CONFIRMATION / INVOICE ================= -->
-<div id="confirmationPage" class="hidden max-w-[700px] mx-auto mt-10 bg-white p-8 rounded-2xl shadow">
+        let subtotal = 0;
 
-<h2 class="text-2xl font-bold text-green-600 text-center mb-4">
-Payment Successful 🎉
-</h2>
+        cart.forEach(item => {
+            subtotal += item.price * item.quantity;
+            document.getElementById("billItems").innerHTML += 
+                `<div class="flex justify-between">
+                    <span>${item.name} <span class="text-gray-400">x${item.quantity}</span></span>
+                    <span class="font-medium">₹${item.price * item.quantity}</span>
+                </div>`;
+        });
 
-<div id="invoiceData" class="space-y-2 text-gray-700"></div>
+        let gst = Math.round(subtotal * 0.05);
+        let total = subtotal + gst;
 
-<hr class="my-4">
+        document.getElementById("subtotal").innerText = "₹" + subtotal;
+        document.getElementById("gst").innerText = "₹" + gst;
+        document.getElementById("total").innerText = "₹" + total;
 
-<div id="totalPaid" class="flex justify-between text-lg font-bold"></div>
+        /* 2. METHOD SWITCHER */
+        function selectMethod(type) {
+            document.querySelectorAll('.method').forEach(e => e.classList.remove('active'));
+            document.getElementById(type + 'Box').classList.add('active');
 
-<button onclick="goHistory()"
-class="w-full mt-6 bg-blue-600 text-white py-3 rounded-xl font-bold">
-View Order History
-</button>
+            ['upi', 'card'].forEach(f => {
+                let form = document.getElementById(f + 'Form');
+                if (form) form.classList.add('hidden');
+            });
+            if (type !== 'cod' && document.getElementById(type + 'Form')) {
+                document.getElementById(type + 'Form').classList.remove('hidden');
+            }
+        }
 
-</div>
+        /* 3. QR LOGIC */
+        function openQR() { document.getElementById("qrBox").classList.remove("hidden"); }
+        function closeQR() { document.getElementById("qrBox").classList.add("hidden"); }
+        function confirmQRPayment() { closeQR(); processPayment(); }
 
-<script>
+        /* 4. PAYMENT PROCESS SIMULATION */
+        function startPayment() { processPayment(); }
 
-/* BILL */
-let cart = JSON.parse(localStorage.getItem("canteenCart")) || [];
-let subtotal=0;
+        function processPayment() {
+            document.getElementById("checkoutPage").classList.add("hidden");
+            document.getElementById("processing").classList.remove("hidden");
 
-cart.forEach(item=>{
-subtotal+=item.price*item.quantity;
-document.getElementById("billItems").innerHTML+=
-`<div class="flex justify-between"><span>${item.name} × ${item.quantity}</span><span>₹${item.price*item.quantity}</span></div>`;
-});
+            setTimeout(() => {
+                document.getElementById("processing").classList.add("hidden");
+                showInvoice();
+            }, 3000);
+        }
 
-let gst=Math.round(subtotal*0.05);
-let total=subtotal+gst;
+        /* 5. GENERATE INVOICE */
+        function showInvoice() {
+            let token = Math.floor(Math.random() * 9000) + 1000;
+            let date = new Date().toLocaleString();
 
-document.getElementById("subtotal").innerText="₹"+subtotal;
-document.getElementById("gst").innerText="₹"+gst;
-document.getElementById("total").innerText="₹"+total;
+            document.getElementById("confirmationPage").classList.remove("hidden");
+            document.getElementById("tokenDisplay").innerText = "#" + token;
 
-/* METHOD SWITCH */
-function selectMethod(type){
-document.querySelectorAll('.method').forEach(e=>e.classList.remove('active'));
-document.getElementById(type+'Box').classList.add('active');
+            document.getElementById("invoiceData").innerHTML = `
+                <div class="flex justify-between mb-1"><span>Date</span><span>${date}</span></div>
+                <div class="flex justify-between mb-1"><span>Payment ID</span><span>TXN${Math.floor(Math.random()*10000000)}</span></div>
+            `;
 
-['upi','card','net'].forEach(f=>{
-let form=document.getElementById(f+'Form');
-if(form) form.classList.add('hidden');
-});
-if(type!=='cod') document.getElementById(type+'Form').classList.remove('hidden');
-}
+            document.getElementById("totalPaid").innerHTML = `
+                <span>Amount Paid</span>
+                <span class="text-green-600">₹${total}</span>
+            `;
 
-/* QR */
-function openQR(){document.getElementById("qrBox").classList.remove("hidden");}
-function closeQR(){document.getElementById("qrBox").classList.add("hidden");}
-function confirmQRPayment(){closeQR();processPayment();}
+            localStorage.removeItem("canteenCart");
+        }
 
-/* PAYMENT PROCESS */
-function startPayment(){processPayment();}
-
-function processPayment(){
-document.getElementById("checkoutPage").style.display="none";
-document.getElementById("processing").classList.remove("hidden");
-
-setTimeout(()=>{
-document.getElementById("processing").classList.add("hidden");
-showInvoice();
-},10000);
-}
-
-/* SHOW INVOICE */
-function showInvoice(){
-
-let token=Math.floor(Math.random()*9000)+1000;
-let date=new Date().toLocaleString();
-
-document.getElementById("confirmationPage").classList.remove("hidden");
-
-document.getElementById("invoiceData").innerHTML=`
-<p><b>Order Token:</b> #${token}</p>
-<p><b>Date:</b> ${date}</p>
-<hr class="my-3">
-`;
-
-cart.forEach(item=>{
-document.getElementById("invoiceData").innerHTML+=
-`<div class="flex justify-between">
-<span>${item.name} × ${item.quantity}</span>
-<span>₹${item.price*item.quantity}</span>
-</div>`;
-});
-
-document.getElementById("totalPaid").innerHTML=`
-<span>Total Paid</span>
-<span class="text-green-600">₹${total}</span>
-`;
-
-/* SAVE HISTORY */
-let orders=JSON.parse(localStorage.getItem("canteenOrders"))||[];
-orders.push({token:token,date:date,items:cart});
-localStorage.setItem("canteenOrders",JSON.stringify(orders));
-localStorage.removeItem("canteenCart");
-}
-
-function goHistory(){
-window.location.href="order-history.html";
-}
-
-</script>
+        function goHome() {
+            window.location.href = "items.html";
+        }
+    </script>
 
 </body>
 </html>
