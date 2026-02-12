@@ -9,20 +9,17 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* --- YOUR PALETTE --- */
-            --bg-body: #FFF8DE;       /* Light Cream (Background) */
-            
-            --primary-orange: #FF9B51; /* Vibrant Orange (Buttons/Highlights) */
-            --soft-orange: #FDC3A1;    /* Peach (Hover States) */
-            
-            --premium-blue: #576A8F;   /* Premium Blue/Grey (Text & Icons) */
-            --cool-glow: #B7BDF7;      /* Periwinkle (Background Orbs/Focus) */
-            
-            --neutral-gray: #BFC6C4;   /* Gray (Borders) */
-            --neutral-beige: #E8E2D8;  /* Beige (Subtle backgrounds) */
+            /* --- PALETTE --- */
+            --bg-body: #FFF8DE;       
+            --primary-orange: #FF9B51; 
+            --soft-orange: #FDC3A1;    
+            --premium-blue: #576A8F;   
+            --cool-glow: #B7BDF7;      
+            --neutral-gray: #BFC6C4;   
+            --neutral-beige: #E8E2D8;  
 
             /* --- DERIVED VARS --- */
-            --card-bg: rgba(255, 255, 255, 0.55); /* Glass effect */
+            --card-bg: rgba(255, 255, 255, 0.55);
             --input-bg: rgba(255, 255, 255, 0.7);
         }
 
@@ -31,7 +28,7 @@
         body {
             font-family: 'Outfit', sans-serif;
             background: var(--bg-body);
-            color: var(--premium-blue); /* switched main text to premium blue */
+            color: var(--premium-blue);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -39,8 +36,7 @@
 
         /* --- Background Effects --- */
         .grid-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
                 linear-gradient(rgba(87, 106, 143, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(87, 106, 143, 0.05) 1px, transparent 1px);
@@ -48,22 +44,12 @@
             animation: gridMove 20s linear infinite;
             pointer-events: none;
         }
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
+        @keyframes gridMove { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
 
-        .orb {
-            position: fixed; border-radius: 50%; filter: blur(90px); opacity: 0.5; pointer-events: none; z-index: 0;
-        }
-        /* Using the Periwinkle (#B7BDF7) for the top orb to mix Cool with Warm */
+        .orb { position: fixed; border-radius: 50%; filter: blur(90px); opacity: 0.5; pointer-events: none; z-index: 0; }
         .orb-1 { width: 400px; height: 400px; background: var(--cool-glow); top: -100px; right: -100px; animation: float 15s ease-in-out infinite; }
-        /* Using the Peach (#FDC3A1) for the bottom orb */
         .orb-2 { width: 350px; height: 350px; background: var(--soft-orange); bottom: -50px; left: -50px; animation: float 12s ease-in-out infinite reverse; }
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, -30px) scale(1.1); }
-        }
+        @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, -30px) scale(1.1); } }
 
         /* --- Container & Card --- */
         .container {
@@ -75,93 +61,79 @@
             background: var(--card-bg);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--neutral-gray); /* Gray Border */
+            border: 1px solid var(--neutral-gray);
             border-radius: 24px;
             padding: 3rem;
             width: 100%; max-width: 440px;
-            box-shadow: 
-                0 20px 40px rgba(87, 106, 143, 0.1), /* Blue-ish shadow */
-                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-            transition: height 0.3s ease;
+            box-shadow: 0 20px 40px rgba(87, 106, 143, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            transition: all 0.4s ease;
         }
 
         /* --- Logo --- */
-        .logo-section { text-align: center; margin-bottom: 2rem; }
-        .logo { display: inline-block; margin-bottom: 1rem; animation: logoGlow 3s ease-in-out infinite; }
-        @keyframes logoGlow {
-            0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 155, 81, 0.3)); }
-            50% { filter: drop-shadow(0 0 25px rgba(255, 155, 81, 0.5)); }
-        }
-        .logo-text {
-            font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 700;
-            color: var(--premium-blue); /* Blue Text */
-            letter-spacing: -0.5px;
-        }
+        .logo-section { text-align: center; margin-bottom: 2rem; transition: all 0.3s ease; }
+        .logo { display: inline-block; margin-bottom: 1rem; }
+        .logo-text { font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 700; color: var(--premium-blue); letter-spacing: -0.5px; }
         .logo-subtext { font-size: 0.875rem; color: var(--neutral-gray); font-weight: 600; margin-top: 0.5rem; letter-spacing: 2px; text-transform: uppercase; }
 
         /* --- Form Elements --- */
         .form-group { margin-bottom: 1.5rem; }
         label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--premium-blue); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; opacity: 0.8; }
-        
         .input-wrapper { position: relative; }
-        /* Icons are now Premium Blue */
         .input-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--premium-blue); font-size: 1.125rem; pointer-events: none; }
-        
         input {
-            width: 100%; padding: 1rem 1rem 1rem 3rem;
-            background: var(--input-bg);
-            border: 2px solid var(--neutral-beige);
-            border-radius: 12px;
-            color: var(--premium-blue); font-size: 1rem; font-family: 'JetBrains Mono', monospace;
-            transition: all 0.2s ease;
+            width: 100%; padding: 1rem 1rem 1rem 3rem; background: var(--input-bg); border: 2px solid var(--neutral-beige); border-radius: 12px; color: var(--premium-blue); font-size: 1rem; font-family: 'JetBrains Mono', monospace; transition: all 0.2s ease;
         }
         input::placeholder { color: var(--neutral-gray); }
-        
-        /* Focus state uses the Periwinkle Glow */
         input:focus { outline: none; border-color: var(--cool-glow); background: #ffffff; box-shadow: 0 0 0 4px rgba(183, 189, 247, 0.2); }
+        .password-toggle { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--neutral-gray); cursor: pointer; padding: 0.5rem; }
 
-        .password-toggle {
-            position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
-            background: none; border: none; color: var(--neutral-gray); cursor: pointer; padding: 0.5rem;
-        }
-        .password-toggle:hover { color: var(--primary-orange); }
-
-        /* --- Buttons & Links --- */
+        /* --- Buttons --- */
         .action-btn {
-            width: 100%; padding: 1.125rem;
-            background: var(--primary-orange);
-            border: none; border-radius: 12px;
-            color: white; font-size: 1rem; font-weight: 700;
-            cursor: pointer; position: relative; overflow: hidden;
-            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; font-family: 'Outfit', sans-serif;
-            margin-top: 1rem;
-            box-shadow: 0 10px 20px rgba(255, 155, 81, 0.25);
+            width: 100%; padding: 1.125rem; background: var(--primary-orange); border: none; border-radius: 12px; color: white; font-size: 1rem; font-weight: 700; cursor: pointer; position: relative; overflow: hidden; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; font-family: 'Outfit', sans-serif; margin-top: 1rem; box-shadow: 0 10px 20px rgba(255, 155, 81, 0.25);
         }
         .action-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(255, 155, 81, 0.4); background: #FF8A33; }
         
         .options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-size: 0.875rem; }
         .remember-me { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--premium-blue); font-weight: 500; }
         .remember-me input { width: auto; accent-color: var(--primary-orange); }
-        
         .link-text { color: var(--premium-blue); text-decoration: none; transition: color 0.2s; cursor: pointer; font-weight: 700; }
         .link-text:hover { color: var(--primary-orange); text-decoration: underline; }
 
-        /* --- Footer Status --- */
-        .status-indicator {
-            display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem;
-            padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--neutral-gray); border-radius: 20px;
-            font-size: 0.75rem; color: var(--premium-blue); font-weight: 600;
-        }
+        /* --- Footer --- */
+        .status-indicator { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.6); border: 1px solid var(--neutral-gray); border-radius: 20px; font-size: 0.75rem; color: var(--premium-blue); font-weight: 600; }
         .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        /* --- Utility & Animation --- */
+        /* --- Utility --- */
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .toggle-prompt { text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--premium-blue); }
+
+        /* --- SUCCESS ANIMATION & CARD --- */
+        .success-tick-container { width: 80px; height: 80px; margin: 0 auto 1.5rem; border-radius: 50%; background: rgba(34, 197, 94, 0.1); display: flex; align-items: center; justify-content: center; }
+        .checkmark__circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 2; stroke-miterlimit: 10; stroke: #22c55e; fill: none; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+        .checkmark { width: 56px; height: 56px; border-radius: 50%; display: block; stroke-width: 2; stroke: #22c55e; stroke-miterlimit: 10; margin: 10% auto; box-shadow: inset 0px 0px 0px #22c55e; animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both; }
+        .checkmark__check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards; }
+        
+        @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+        @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+        @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 30px transparent; } }
+
+        .credential-card {
+            background: #ffffff;
+            border: 2px dashed var(--neutral-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+            position: relative;
+        }
+        .credential-row { margin-bottom: 0.75rem; }
+        .credential-label { font-size: 0.75rem; text-transform: uppercase; color: var(--neutral-gray); font-weight: 700; letter-spacing: 1px; }
+        .credential-value { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--premium-blue); font-weight: 600; word-break: break-all; }
+
     </style>
 </head>
 <body>
@@ -170,8 +142,8 @@
     <div class="orb orb-2"></div>
 
     <div class="container">
-        <div class="login-card">
-            <div class="logo-section">
+        <div class="login-card" id="mainCard">
+            <div class="logo-section" id="logoSection">
                 <div class="logo">
                     <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="5" y="5" width="50" height="50" rx="14" stroke="#576A8F" stroke-width="2.5" fill="rgba(87, 106, 143, 0.05)"/>
@@ -188,7 +160,7 @@
                     <label for="loginRollNo">Roll Number</label>
                     <div class="input-wrapper">
                         <span class="input-icon">📋</span>
-                        <input type="text" id="loginRollNo" placeholder="MSIT_XXX" pattern="[A-Z]{2,4}_\d{3}" required>
+                        <input type="text" id="loginRollNo" placeholder="Enter your Roll Number" required>
                     </div>
                 </div>
 
@@ -228,7 +200,7 @@
                     <label for="signupRollNo">Roll Number</label>
                     <div class="input-wrapper">
                         <span class="input-icon">📋</span>
-                        <input type="text" id="signupRollNo" placeholder="MSIT_045" pattern="[A-Z]{2,4}_\d{3}" required>
+                        <input type="text" id="signupRollNo" placeholder="Enter your Roll Number" required>
                     </div>
                 </div>
 
@@ -256,7 +228,34 @@
                 </div>
             </form>
 
-            <center>
+            <div id="successView" class="hidden fade-in" style="text-align: center;">
+                <div class="success-tick-container">
+                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                </div>
+                
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #22c55e;">Sign Up Successful!</h2>
+                <p style="font-size: 0.9rem; color: var(--neutral-gray);">Please save your credentials.</p>
+
+                <div class="credential-card">
+                    <div class="credential-row">
+                        <div class="credential-label">User ID</div>
+                        <div class="credential-value" id="displayRollNo">--</div>
+                    </div>
+                    <div class="credential-row" style="margin-bottom: 0;">
+                        <div class="credential-label">Password</div>
+                        <div class="credential-value" id="displayPassword">--</div>
+                    </div>
+                </div>
+
+                <button onclick="switchForm('login'); document.getElementById('successView').classList.add('hidden');" class="action-btn" style="background: var(--premium-blue);">
+                    Go to Login
+                </button>
+            </div>
+
+            <center id="footerStatus">
                 <div class="status-indicator">
                     <span class="status-dot"></span>
                     <span>System Online • 0 Queue</span>
@@ -271,15 +270,21 @@
             const loginForm = document.getElementById('loginForm');
             const signupForm = document.getElementById('signupForm');
             const subtext = document.getElementById('headerSubtext');
+            const logoSection = document.getElementById('logoSection');
+            const footer = document.getElementById('footerStatus');
 
             if (target === 'signup') {
                 loginForm.classList.add('hidden');
                 signupForm.classList.remove('hidden');
                 subtext.textContent = "Create New Account";
+                logoSection.classList.remove('hidden');
+                footer.classList.remove('hidden');
             } else {
                 signupForm.classList.add('hidden');
                 loginForm.classList.remove('hidden');
                 subtext.textContent = "Queue-Free Ordering";
+                logoSection.classList.remove('hidden');
+                footer.classList.remove('hidden');
             }
         }
 
@@ -298,27 +303,49 @@
             });
         });
 
-        // --- Mock Submission ---
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const btn = form.querySelector('.action-btn');
-                const originalText = btn.textContent;
+        // --- Handle Sign Up Submission ---
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = this.querySelector('.action-btn');
+            const originalText = btn.textContent;
+            const rollNo = document.getElementById('signupRollNo').value;
+            const pass = document.getElementById('signupPassword').value;
+
+            btn.textContent = 'Creating Account...';
+            btn.style.opacity = '0.7';
+
+            // Simulate API Delay
+            setTimeout(() => {
+                // Hide Form elements
+                document.getElementById('signupForm').classList.add('hidden');
+                document.getElementById('logoSection').classList.add('hidden');
+                document.getElementById('footerStatus').classList.add('hidden');
                 
-                btn.textContent = 'Processing...';
-                btn.style.opacity = '0.7';
+                // Show Success View
+                const successView = document.getElementById('successView');
+                successView.classList.remove('hidden');
                 
-                setTimeout(() => {
-                    btn.textContent = '✓ Success!';
-                    btn.style.background = '#22c55e'; 
-                    setTimeout(() => {
-                        alert("Action Successful! (Connecting to Backend...)");
-                        btn.textContent = originalText;
-                        btn.style.background = ''; // Reverts to CSS var
-                        btn.style.opacity = '1';
-                    }, 1000);
-                }, 1500);
-            });
+                // Populate Credentials
+                document.getElementById('displayRollNo').textContent = rollNo;
+                document.getElementById('displayPassword').textContent = pass; 
+                
+                // Reset Button
+                btn.textContent = originalText;
+                btn.style.opacity = '1';
+
+            }, 1200);
+        });
+
+        // --- Handle Login Submission (Mock) ---
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('.action-btn');
+            btn.textContent = 'Authenticating...';
+            setTimeout(() => {
+                alert("Login Successful! Redirecting...");
+                btn.textContent = 'Access Canteen';
+            }, 1000);
         });
     </script>
 </body>
