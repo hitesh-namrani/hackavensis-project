@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CanteenOS - Order History</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+.invoice-card{
+    transition: all 0.3s ease;
+}
+.invoice-card:hover{
+    transform: translateY(-6px);
+}
+.status{
+    font-size:12px;
+    font-weight:bold;
+    padding:4px 12px;
+    border-radius:999px;
+}
+.delivered{background:#16a34a;color:white;}
+.preparing{background:#facc15;color:black;}
+.cancelled{background:#ef4444;color:white;}
+</style>
+</head>
+
+<!-- SAME BACKGROUND AS MENU PAGE -->
+<body class="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-400 font-sans pb-32 min-h-screen">
+
+<!-- SAME HEADER -->
+<div class="bg-white/90 backdrop-blur-sm p-4 sticky top-0 shadow-sm z-30 flex justify-between items-center">
+    <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+
+        <div>
+            <h1 class="text-3xl font-black text-gray-800">CanteenOS</h1>
+            <p class="text-xs text-gray-500 font-bold tracking-wide">ORDER HISTORY</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <span class="hidden md:block font-bold text-gray-700 text-sm">Welcome, Student!</span>
+            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                M
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="max-w-5xl mx-auto px-4 mt-6">
+
+<h2 class="text-2xl font-extrabold text-white drop-shadow mb-5">
+Your Previous Orders
+</h2>
+
+<div id="ordersContainer" class="space-y-6"></div>
+
+</div>
+
+<script>
+
+let orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
+const container = document.getElementById("ordersContainer");
+
+if(orders.length === 0){
+    container.innerHTML = `
+    <div class="bg-white rounded-2xl p-10 text-center shadow-xl">
+        <h3 class="text-2xl font-bold text-gray-800">No Orders Yet 😔</h3>
+        <p class="text-gray-500 mt-2">Start ordering delicious food!</p>
+
+        <button onclick="window.location.href='menu.html'"
+        class="mt-6 bg-red-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:bg-red-700">
+        Browse Menu
+        </button>
+    </div>`;
+}
+
+orders.reverse().forEach(order => {
+
+let itemsHTML="";
+let subtotal=0;
+
+order.items.forEach(item=>{
+subtotal += item.price * item.quantity;
+
+itemsHTML += `
+<div class="flex justify-between text-sm text-gray-700">
+    <span>${item.name} × ${item.quantity}</span>
+    <span class="font-semibold">₹${item.price * item.quantity}</span>
+</div>`;
+});
+
+let statusClass="delivered";
+if(order.status==="Preparing") statusClass="preparing";
+if(order.status==="Cancelled") statusClass="cancelled";
+
+container.innerHTML += `
+<div class="invoice-card bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden p-5">
+
+    <!-- TOP -->
+    <div class="flex justify-between items-center mb-3">
+        <div>
+            <p class="text-xs text-gray-500 font-bold">ORDER TOKEN</p>
+            <h3 class="text-xl font-black text-gray-800">#${order.token}</h3>
+        </div>
+
+        <span class="status ${statusClass}">
+            ${order.status}
+        </span>
+    </div>
+
+    <p class="text-xs text-gray-500 mb-4">${order.date}</p>
+
+    <!-- ITEMS -->
+    <div class="space-y-2 border-t border-b py-3">
+        ${itemsHTML}
+    </div>
+
+    <!-- BILL -->
+    <div class="mt-4 space-y-1 text-sm text-gray-700">
+        <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span>₹${subtotal}</span>
+        </div>
+
+        <div class="flex justify-between">
+            <span>GST (5%)</span>
+            <span>₹${Math.round(subtotal*0.05)}</span>
+        </div>
+
+        <div class="flex justify-between font-bold text-base mt-2">
+            <span>Total Paid</span>
+            <span class="text-red-600">₹${Math.round(subtotal*1.05)}</span>
+        </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="flex gap-3 mt-5">
+
+        <button onclick="downloadInvoice('${order.token}')"
+        class="flex-1 bg-white border-2 border-red-600 text-red-600 font-bold py-2 rounded-xl shadow-sm hover:bg-red-50">
+        Invoice
+        </button>
+
+        <button onclick="reorder(${order.token})"
+        class="flex-1 bg-red-600 text-white font-bold py-2 rounded-xl shadow-lg hover:bg-red-700">
+        Reorder
+        </button>
+
+    </div>
+
+</div>
+`;
+});
+
+function reorder(token){
+let order = orders.find(o=>o.token==token);
+localStorage.setItem("canteenCart",JSON.stringify(order.items));
+window.location.href="cart.html";
+}
+
+function downloadInvoice(token){
+alert("Invoice downloaded for Order #"+token+" (Demo)");
+}
+
+</script>
+
+</body>
+</html>
