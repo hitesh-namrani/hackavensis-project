@@ -133,3 +133,12 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Canteen OS live at http://localhost:${PORT}`);
 });
+// Fetch All Orders (Used for Admin AND History for this demo)
+app.get('/api/admin/orders', async (req, res) => {
+    try {
+        const orders = await Order.find().sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});

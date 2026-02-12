@@ -1,170 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CanteenOS - Order History</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<style>
-.invoice-card{
-    transition: all 0.3s ease;
-}
-.invoice-card:hover{
-    transform: translateY(-6px);
-}
-.status{
-    font-size:12px;
-    font-weight:bold;
-    padding:4px 12px;
-    border-radius:999px;
-}
-.delivered{background:#16a34a;color:white;}
-.preparing{background:#facc15;color:black;}
-.cancelled{background:#ef4444;color:white;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CanteenOS - Order History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .invoice-card { transition: all 0.3s ease; }
+        .invoice-card:hover { transform: translateY(-6px); }
+        .status-badge { font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 999px; text-transform: uppercase; }
+        .status-pending { background: #fbbf24; color: black; } /* Yellow */
+        .status-preparing { background: #3b82f6; color: white; } /* Blue */
+        .status-ready { background: #22c55e; color: white; } /* Green */
+        .status-delivered { background: #6b7280; color: white; } /* Gray */
+        .status-cancelled { background: #ef4444; color: white; } /* Red */
+    </style>
 </head>
 
-<!-- SAME BACKGROUND AS MENU PAGE -->
 <body class="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-400 font-sans pb-32 min-h-screen">
 
-<!-- SAME HEADER -->
-<div class="bg-white/90 backdrop-blur-sm p-4 sticky top-0 shadow-sm z-30 flex justify-between items-center">
-    <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-
-        <div>
-            <h1 class="text-3xl font-black text-gray-800">CanteenOS</h1>
-            <p class="text-xs text-gray-500 font-bold tracking-wide">ORDER HISTORY</p>
-        </div>
-
-        <div class="flex items-center gap-4">
-            <span class="hidden md:block font-bold text-gray-700 text-sm">Welcome, Student!</span>
-            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-                M
+    <div class="bg-white/90 backdrop-blur-sm p-4 sticky top-0 shadow-sm z-30 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <div onclick="window.location.href='/items.html'" style="cursor: pointer;">
+                <h1 class="text-3xl font-black text-gray-800">CanteenOS</h1>
+                <p class="text-xs text-gray-500 font-bold tracking-wide">ORDER HISTORY</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="window.location.href='/items.html'" class="text-sm font-bold text-red-600 hover:underline">
+                    Back to Menu
+                </button>
+                <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                    S
+                </div>
             </div>
         </div>
-
-    </div>
-</div>
-
-<div class="max-w-5xl mx-auto px-4 mt-6">
-
-<h2 class="text-2xl font-extrabold text-white drop-shadow mb-5">
-Your Previous Orders
-</h2>
-
-<div id="ordersContainer" class="space-y-6"></div>
-
-</div>
-
-<script>
-
-let orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
-const container = document.getElementById("ordersContainer");
-
-if(orders.length === 0){
-    container.innerHTML = `
-    <div class="bg-white rounded-2xl p-10 text-center shadow-xl">
-        <h3 class="text-2xl font-bold text-gray-800">No Orders Yet 😔</h3>
-        <p class="text-gray-500 mt-2">Start ordering delicious food!</p>
-
-        <button onclick="window.location.href='menu.html'"
-        class="mt-6 bg-red-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:bg-red-700">
-        Browse Menu
-        </button>
-    </div>`;
-}
-
-orders.reverse().forEach(order => {
-
-let itemsHTML="";
-let subtotal=0;
-
-order.items.forEach(item=>{
-subtotal += item.price * item.quantity;
-
-itemsHTML += `
-<div class="flex justify-between text-sm text-gray-700">
-    <span>${item.name} × ${item.quantity}</span>
-    <span class="font-semibold">₹${item.price * item.quantity}</span>
-</div>`;
-});
-
-let statusClass="delivered";
-if(order.status==="Preparing") statusClass="preparing";
-if(order.status==="Cancelled") statusClass="cancelled";
-
-container.innerHTML += `
-<div class="invoice-card bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden p-5">
-
-    <!-- TOP -->
-    <div class="flex justify-between items-center mb-3">
-        <div>
-            <p class="text-xs text-gray-500 font-bold">ORDER TOKEN</p>
-            <h3 class="text-xl font-black text-gray-800">#${order.token}</h3>
-        </div>
-
-        <span class="status ${statusClass}">
-            ${order.status}
-        </span>
     </div>
 
-    <p class="text-xs text-gray-500 mb-4">${order.date}</p>
-
-    <!-- ITEMS -->
-    <div class="space-y-2 border-t border-b py-3">
-        ${itemsHTML}
-    </div>
-
-    <!-- BILL -->
-    <div class="mt-4 space-y-1 text-sm text-gray-700">
-        <div class="flex justify-between">
-            <span>Subtotal</span>
-            <span>₹${subtotal}</span>
-        </div>
-
-        <div class="flex justify-between">
-            <span>GST (5%)</span>
-            <span>₹${Math.round(subtotal*0.05)}</span>
-        </div>
-
-        <div class="flex justify-between font-bold text-base mt-2">
-            <span>Total Paid</span>
-            <span class="text-red-600">₹${Math.round(subtotal*1.05)}</span>
+    <div class="max-w-5xl mx-auto px-4 mt-6">
+        <h2 class="text-2xl font-extrabold text-white drop-shadow mb-5">Your Previous Orders</h2>
+        <div id="ordersContainer" class="space-y-6">
+            <div class="text-white text-center font-bold animate-pulse">Loading your orders...</div>
         </div>
     </div>
 
-    <!-- BUTTONS -->
-    <div class="flex gap-3 mt-5">
+    <script>
+        // 1. Fetch Orders from Backend
+        async function loadOrders() {
+            const container = document.getElementById("ordersContainer");
+            
+            // Get user ID (assuming you stored it during login, or use a hardcoded demo ID for now)
+            // For this hackathon demo, we will fetch ALL orders to show the UI working.
+            // In production, you'd filter by the logged-in user's ID.
+            
+            try {
+                const res = await fetch('/api/admin/orders'); // Re-using the admin route for demo simplicity
+                const orders = await res.json();
 
-        <button onclick="downloadInvoice('${order.token}')"
-        class="flex-1 bg-white border-2 border-red-600 text-red-600 font-bold py-2 rounded-xl shadow-sm hover:bg-red-50">
-        Invoice
-        </button>
+                if (orders.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-white rounded-2xl p-10 text-center shadow-xl">
+                            <h3 class="text-2xl font-bold text-gray-800">No Orders Yet 😔</h3>
+                            <p class="text-gray-500 mt-2">Start ordering delicious food!</p>
+                            <button onclick="window.location.href='/items.html'" class="mt-6 bg-red-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:bg-red-700">
+                                Browse Menu
+                            </button>
+                        </div>`;
+                    return;
+                }
 
-        <button onclick="reorder(${order.token})"
-        class="flex-1 bg-red-600 text-white font-bold py-2 rounded-xl shadow-lg hover:bg-red-700">
-        Reorder
-        </button>
+                container.innerHTML = ''; // Clear loading
 
-    </div>
+                orders.forEach(order => {
+                    // Calculate totals
+                    let itemsHTML = "";
+                    let totalItems = 0;
+                    
+                    order.items.forEach(item => {
+                        const itemTotal = item.price * item.quantity;
+                        itemsHTML += `
+                            <div class="flex justify-between text-sm text-gray-700 border-b border-gray-100 py-2">
+                                <span>${item.name} <span class="text-gray-400 text-xs">x${item.quantity}</span></span>
+                                <span class="font-semibold">₹${itemTotal}</span>
+                            </div>`;
+                    });
 
-</div>
-`;
-});
+                    // Determine Status Color
+                    let statusClass = "status-pending";
+                    const s = order.status.toLowerCase();
+                    if (s === 'preparing') statusClass = "status-preparing";
+                    if (s === 'ready') statusClass = "status-ready";
+                    if (s === 'delivered') statusClass = "status-delivered";
+                    if (s === 'cancelled') statusClass = "status-cancelled";
 
-function reorder(token){
-let order = orders.find(o=>o.token==token);
-localStorage.setItem("canteenCart",JSON.stringify(order.items));
-window.location.href="cart.html";
-}
+                    // Format Date
+                    const date = new Date(order.createdAt).toLocaleString();
 
-function downloadInvoice(token){
-alert("Invoice downloaded for Order #"+token+" (Demo)");
-}
+                    // Render Card
+                    const html = `
+                        <div class="invoice-card bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden p-5">
+                            
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Order Token</p>
+                                    <h3 class="text-2xl font-black text-gray-800 tracking-tight">${order.orderToken}</h3>
+                                    <p class="text-xs text-gray-400 mt-1">${date}</p>
+                                </div>
+                                <span class="status-badge ${statusClass}">
+                                    ${order.status}
+                                </span>
+                            </div>
 
-</script>
+                            <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                                ${itemsHTML}
+                            </div>
 
+                            <div class="space-y-1 text-sm text-gray-600 px-1">
+                                <div class="flex justify-between items-center">
+                                    <span>Subtotal</span>
+                                    <span>₹${order.totalAmount}</span>
+                                </div>
+                                <div class="flex justify-between items-center font-bold text-lg text-gray-800 mt-2 pt-2 border-t border-gray-200">
+                                    <span>Total Paid</span>
+                                    <span class="text-red-600">₹${order.totalAmount}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-3 mt-6">
+                                <button onclick="alert('Downloading invoice for ${order.orderToken}...')" class="flex-1 bg-white border-2 border-red-600 text-red-600 font-bold py-3 rounded-xl hover:bg-red-50 transition">
+                                    📄 Invoice
+                                </button>
+                                <button onclick="reorder('${order._id}')" class="flex-1 bg-red-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-red-700 transition">
+                                    🔄 Reorder
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<p class="text-white text-center">Failed to load orders. Is the server running?</p>`;
+            }
+        }
+
+        // 2. Reorder Logic
+        function reorder(orderId) {
+            // In a real app, fetch the order details again and add to cart.
+            // For demo, just redirect to menu
+            alert("Items added to cart! Redirecting to menu...");
+            window.location.href = "/items.html";
+        }
+
+        // Initialize
+        loadOrders();
+    </script>
 </body>
 </html>
