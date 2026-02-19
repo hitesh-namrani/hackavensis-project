@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CanteenOS - Live Orders</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+    .order-card {
+        transition: all 0.3s ease;
+    }
+    .order-card:hover {
+        transform: translateY(-4px);
+    }
+
+    /* Status Badges */
+    .status-pending { background: #fef08a; color: #854d0e; } /* Yellow */
+    .status-preparing { background: #fed7aa; color: #9a3412; } /* Orange */
+    .status-ready { background: #bbf7d0; color: #166534; } /* Green */
+
+    .badge {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .item-list {
+        max-height: 120px;
+        overflow-y: auto;
+    }
+    /* Custom Scrollbar for items */
+    .item-list::-webkit-scrollbar { width: 4px; }
+    .item-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+    .item-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+</style>
+</head>
+
+<body class="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-400 font-sans pb-32 min-h-screen">
+
+<div class="bg-white/90 backdrop-blur-sm p-4 sticky top-0 shadow-sm z-30 flex justify-between items-center">
+    <div class="max-w-[1400px] mx-auto w-full flex justify-between items-center">
+
+        <div>
+            <h1 class="text-3xl font-black text-gray-800">CanteenOS</h1>
+            <p class="text-xs text-gray-500 font-bold tracking-wide">LIVE ORDERS PANEL</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <a href="stock.html" class="hidden md:block font-bold text-red-600 hover:text-red-800 text-sm underline underline-offset-4 mr-4">
+                Manage Stock
+            </a>
+            <span class="hidden md:block font-bold text-gray-700 text-sm">Owner Mode</span>
+            <div class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                O
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="max-w-[1400px] mx-auto px-6 mt-6">
+    <div class="flex justify-between items-end mb-6">
+        <h2 class="text-2xl font-extrabold text-white drop-shadow">Active Orders</h2>
+        <button onclick="resetMockOrders()" class="text-xs text-white/80 hover:text-white underline pb-1">Reset Demo Orders</button>
+    </div>
+
+    <div id="ordersContainer" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7">
+        </div>
+
+    <div id="emptyState" class="hidden text-center py-20">
+        <div class="text-6xl mb-4">🍽️</div>
+        <h3 class="text-2xl font-bold text-white drop-shadow">All caught up!</h3>
+        <p class="text-white/80 font-medium mt-2">No active orders in the queue right now.</p>
+    </div>
+</div>
+
+<script>
+    /* -------- INITIALIZE MOCK ORDERS -------- */
+    function initMockOrders() {
+        const defaultOrders = [
+            { id: "ORD-101", student: "21BCE104", time: "12:30 PM", status: "pending", total: 60, items: [{name: "Samosa", qty: 2}, {name: "Coke", qty: 1}] },
+            { id: "ORD-102", student: "22BME045", time: "12:32 PM", status: "pending", total: 45, items: [{name: "Maggi", qty: 1}] },
+            { id: "ORD-103", student: "20BIT012", time: "12:25 PM", status: "preparing", total: 120, items: [{name: "Thali", qty: 1}, {name: "Lassi", qty: 1}] },
+            { id: "ORD-104", student: "23BCE099", time: "12:15 PM", status: "ready", total: 35, items: [{name: "Vadapav", qty: 1}] }
+        ];
+        
+        if (!localStorage.getItem("canteenOrders")) {
+            localStorage.setItem("canteenOrders", JSON.stringify(defaultOrders));
+        }
+    }
+
+    // Run initialization
+    initMockOrders();
+
+    /* -------- RENDER ORDERS -------- */
+    function renderOrders() {
+        const container = document.getElementById("ordersContainer");
+        const emptyState = document.getElementById("emptyState");
+        let orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
+        
+        // Filter out delivered orders to keep the dashboard clean
+        let activeOrders = orders.filter(o => o.status !== "delivered");
+
+        container.innerHTML = "";
+
+        if (activeOrders.length === 0) {
+            emptyState.classList.remove("hidden");
+            return;
+        } else {
+            emptyState.classList.add("hidden");
+        }
+
+        activeOrders.forEach(order => {
+            // Determine styling and button logic based on status
+            let badgeClass = "";
+            let btnText = "";
+            let btnColor = "";
+            let nextStatus = "";
+
+            if (order.status === "pending") {
+                badgeClass = "status-pending";
+                btnText = "Approve Order";
+                btnColor = "bg-yellow-500 hover:bg-yellow-600 text-yellow-950";
+                nextStatus = "preparing";
+            } else if (order.status === "preparing") {
+                badgeClass = "status-preparing";
+                btnText = "Mark Prepared";
+                btnColor = "bg-orange-500 hover:bg-orange-600 text-white";
+                nextStatus = "ready";
+            } else if (order.status === "ready") {
+                badgeClass = "status-ready";
+                btnText = "Mark Delivered";
+                btnColor = "bg-green-600 hover:bg-green-700 text-white";
+                nextStatus = "delivered";
+            }
+
+            // Generate items list HTML
+            let itemsHtml = order.items.map(item => `
+                <li class="flex justify-between border-b border-gray-100 py-1.5 last:border-0">
+                    <span class="text-gray-700 font-medium">${item.qty}x ${item.name}</span>
+                </li>
+            `).join('');
+
+            // Inject Card
+            container.innerHTML += `
+            <div class="order-card bg-white rounded-2xl shadow-xl border-4 border-white overflow-hidden p-5 flex flex-col h-full">
+                
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h3 class="font-black text-xl text-gray-900">${order.id}</h3>
+                        <p class="text-xs text-gray-500 font-bold mt-0.5">${order.time} • ${order.student}</p>
+                    </div>
+                    <span class="badge ${badgeClass}">${order.status}</span>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-3 mb-4 flex-grow item-list">
+                    <ul class="text-sm">
+                        ${itemsHtml}
+                    </ul>
+                </div>
+
+                <div class="mt-auto">
+                    <div class="flex justify-between items-center mb-3 px-1">
+                        <span class="text-sm text-gray-500 font-bold">Total:</span>
+                        <span class="font-black text-lg text-gray-900">₹${order.total}</span>
+                    </div>
+
+                    <button onclick="updateOrderStatus('${order.id}', '${nextStatus}')" 
+                    class="w-full py-2.5 rounded-xl font-bold shadow-sm transition-colors ${btnColor}">
+                        ${btnText}
+                    </button>
+                </div>
+                
+            </div>
+            `;
+        });
+    }
+
+    /* -------- UPDATE STATUS LOGIC -------- */
+    function updateOrderStatus(orderId, newStatus) {
+        let orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
+        
+        let orderIndex = orders.findIndex(o => o.id === orderId);
+        if (orderIndex !== -1) {
+            orders[orderIndex].status = newStatus;
+            localStorage.setItem("canteenOrders", JSON.stringify(orders));
+            renderOrders();
+        }
+    }
+
+    /* -------- DEV TOOL: RESET ORDERS -------- */
+    function resetMockOrders() {
+        localStorage.removeItem("canteenOrders");
+        initMockOrders();
+        renderOrders();
+    }
+
+    // Initial Render
+    renderOrders();
+
+</script>
+
+</body>
+</html>

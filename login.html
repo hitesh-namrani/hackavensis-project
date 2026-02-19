@@ -167,57 +167,64 @@
     </div>
 
     <script>
+        // --- INITIALIZE MOCK DATABASE ---
+        // We use localStorage to store a JSON object of users, keyed by Roll Number.
+        if (!localStorage.getItem('canteen_users')) {
+            const defaultUsers = {
+                'ADMIN': { password: 'admin', role: 'owner', name: 'System Administrator' }
+            };
+            localStorage.setItem('canteen_users', JSON.stringify(defaultUsers));
+        }
+
         function switchForm(target) {
             document.getElementById('loginForm').classList.toggle('hidden', target === 'signup');
             document.getElementById('signupForm').classList.toggle('hidden', target === 'login');
             document.getElementById('headerSubtext').textContent = target === 'signup' ? "Create New Account" : "Queue-Free Ordering";
         }
 
-        // --- BACKEND INTEGRATION ---
+        // --- MOCK FRONTEND LOGIC (With LocalStorage) ---
 
-        // 1. Handle Login
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        // 1. Handle Mock Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const rollNo = document.getElementById('loginRollNo').value.toUpperCase();
+            const rollNo = document.getElementById('loginRollNo').value.toUpperCase().trim();
             const password = document.getElementById('loginPassword').value;
             const btn = document.getElementById('loginBtn');
 
             btn.textContent = "Authenticating...";
             btn.disabled = true;
             
-            try {
-                const res = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ rollNo, password })
-                });
-                const data = await res.json();
+            setTimeout(() => {
+                const users = JSON.parse(localStorage.getItem('canteen_users')) || {};
+                const user = users[rollNo];
 
-                if (res.ok) {
-                    localStorage.setItem('role', data.role);
-                    // Redirect logic
-                    if (data.role === 'owner') {
-                        window.location.href = '/owner-dashboard.html';
+                if (user && user.password === password) {
+                    // Success! Store active session info
+                    localStorage.setItem('role', user.role);
+                    localStorage.setItem('currentUser', rollNo); 
+                    localStorage.setItem('currentUserName', user.name);
+
+                    // Redirect based on role
+                    if (user.role === 'owner') {
+                        window.location.href = 'owner-dashboard.html';
                     } else {
-                        window.location.href = '/items.html';
+                        window.location.href = 'items.html';
                     }
                 } else {
-                    alert(data.message);
-                    btn.textContent = "Access Canteen";
-                    btn.disabled = false;
+                    alert("Invalid Roll Number or Password. Please try again.");
                 }
-            } catch (err) {
-                console.error(err);
-                alert("Server Error. Ensure your Node.js backend is running on port 3000!");
+                
+                // Reset button state
                 btn.textContent = "Access Canteen";
                 btn.disabled = false;
-            }
+            }, 800);
         });
 
-        // 2. Handle Signup
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        // 2. Handle Mock Signup
+        document.getElementById('signupForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const username = document.getElementById('signupRollNo').value.toUpperCase();
+            const fullName = document.getElementById('fullName').value.trim();
+            const rollNo = document.getElementById('signupRollNo').value.toUpperCase().trim();
             const password = document.getElementById('signupPassword').value;
             const btn = document.getElementById('signupBtn');
             const originalText = btn.textContent;
@@ -225,32 +232,35 @@
             btn.textContent = "Creating Account...";
             btn.disabled = true;
 
-            try {
-                const res = await fetch('/api/signup', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password, role: 'student' })
-                });
+            setTimeout(() => {
+                const users = JSON.parse(localStorage.getItem('canteen_users')) || {};
 
-                const data = await res.json();
-
-                if (res.ok) {
-                    document.getElementById('signupForm').classList.add('hidden');
-                    document.getElementById('logoSection').classList.add('hidden');
-                    document.getElementById('successView').classList.remove('hidden');
-                    document.getElementById('displayRollNo').textContent = username;
-                    document.getElementById('displayPassword').textContent = password;
-                } else {
-                    alert(data.message || "Signup failed.");
+                if (users[rollNo]) {
+                    alert("An account with this Roll Number already exists!");
                     btn.textContent = originalText;
                     btn.disabled = false;
+                    return;
                 }
-            } catch (err) {
-                console.error(err);
-                alert("Connection failed.");
+
+                // Save new user to our mock database
+                users[rollNo] = {
+                    password: password,
+                    role: 'student',
+                    name: fullName
+                };
+                localStorage.setItem('canteen_users', JSON.stringify(users));
+
+                // Show success screen
+                document.getElementById('signupForm').classList.add('hidden');
+                document.getElementById('logoSection').classList.add('hidden');
+                document.getElementById('successView').classList.remove('hidden');
+                
+                document.getElementById('displayRollNo').textContent = rollNo;
+                document.getElementById('displayPassword').textContent = password;
+                
                 btn.textContent = originalText;
                 btn.disabled = false;
-            }
+            }, 800);
         });
     </script>
 </body>
